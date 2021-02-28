@@ -1,0 +1,15 @@
+[remap]
+
+importer="bitmap"
+type="BitMap"
+path="res://.import/temp.png-79c9efc586f5ff1f16d74676d7ae5793.res"
+
+[deps]
+
+source_file="res://Assets/Img/temp.png"
+dest_files=[ "res://.import/temp.png-79c9efc586f5ff1f16d74676d7ae5793.res" ]
+
+[params]
+
+create_from=1
+threshold=0.5

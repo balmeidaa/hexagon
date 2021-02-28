@@ -1,0 +1,15 @@
+[remap]
+
+importer="bitmap"
+type="BitMap"
+path="res://.import/hex_map.bmp-b6f641c7284f8bfc4f01889b6a9bce8c.res"
+
+[deps]
+
+source_file="res://Assets/Img/hex_map.bmp"
+dest_files=[ "res://.import/hex_map.bmp-b6f641c7284f8bfc4f01889b6a9bce8c.res" ]
+
+[params]
+
+create_from=0
+threshold=0.5
