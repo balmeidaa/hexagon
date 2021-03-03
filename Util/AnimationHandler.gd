@@ -12,6 +12,7 @@ var queue = []
 # TODO function to process Q for Swap an elimination
     
 func _process(delta):
+    print('f')
     for obj in queue:
        
         match obj.animationType:

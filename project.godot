@@ -28,5 +28,5 @@ CellEventHandler="*res://CellEventHandler.gd"
 quality/driver/driver_name="GLES2"
 vram_compression/import_etc=true
 vram_compression/import_etc2=false
-environment/default_clear_color=Color( 0.976471, 0.976471, 0.976471, 1 )
+environment/default_clear_color=Color( 0.784314, 0.784314, 0.784314, 1 )
 environment/default_environment="res://default_env.tres"

@@ -2,15 +2,14 @@
 
 [ext_resource path="res://HexCell.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Img/hex.png" type="Texture" id=2]
-[ext_resource path="res://Assets/Fonts/snap_2_grid.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://Assets/Fonts/ubuntu.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://Assets/Img/hex_disabled.png" type="Texture" id=4]
 [ext_resource path="res://Assets/Img/hex_over.png" type="Texture" id=5]
 [ext_resource path="res://Assets/Img/hex_pressed.png" type="Texture" id=6]
 [ext_resource path="res://Assets/Img/map.png" type="BitMap" id=7]
 
 [sub_resource type="DynamicFont" id=1]
-size = 74
-use_mipmaps = true
+size = 25
 use_filter = true
 font_data = ExtResource( 3 )
 
@@ -36,16 +35,14 @@ __meta__ = {
 }
 
 [node name="Label" type="RichTextLabel" parent="."]
-margin_left = -32.0
-margin_top = -24.0
-margin_right = 48.0
-margin_bottom = 40.0
+margin_left = -40.0
+margin_top = -16.0
+margin_right = 40.0
+margin_bottom = 8.0
 custom_fonts/normal_font = SubResource( 1 )
 custom_colors/default_color = Color( 0.0392157, 0.0352941, 0.0352941, 1 )
 meta_underlined = false
 tab_size = 2
-text = "
-"
 scroll_active = false
 __meta__ = {
 "_edit_use_anchors_": false
@@ -53,3 +50,5 @@ __meta__ = {
 
 [node name="Tween" type="Tween" parent="."]
 [connection signal="pressed" from="Button" to="." method="_on_Cell_pressed"]
+[connection signal="tween_all_completed" from="Tween" to="." method="_on_Tween_tween_all_completed"]
+[connection signal="tween_completed" from="Tween" to="." method="_on_Tween_tween_completed"]
