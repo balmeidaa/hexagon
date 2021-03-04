@@ -3,8 +3,7 @@ extends Node
 enum Elements {FIRE, ICE, WATER, EARTH}
 var rng = RandomNumberGenerator.new()
 
-func _ready():
-    rng.randomize()
+    
 
     
 func random() -> int:

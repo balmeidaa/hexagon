@@ -13,7 +13,8 @@ func _ready():
     $HexGrid.create_grid(vectorScale, vectorGridSize)
     $Debugger.add_property($HexGrid, "selectionStack", "")
     $Debugger.add_property($HexGrid, "availableNeighbors", "")
-
+    $Debugger.add_property($HexGrid, "missingCells", "")
+    $Debugger.add_property($HexGrid, "eliminationQueue", "")
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #    pass

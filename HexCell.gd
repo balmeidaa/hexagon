@@ -6,15 +6,13 @@ const animationStateEnum = ['idle','selected','move_to','circular_motion','remov
 
 var animationState = []
 var nextPosition = []
-var playNextAnimation = true
 var animation = ""
 
 func _ready():
     TweenAnimator.connect("tween_completed", self, "continue_animation")
     
 func _process(_delta):
-    if animationState.size() > 0 and playNextAnimation:
-        playNextAnimation = false
+    if animationState.size() > 0 :
         animation = animationState.pop_front()
         match animation:
             "move_to":
@@ -61,11 +59,11 @@ func circular_motion():
 
 func remove():
     TweenAnimator.interpolate_property(self, "scale", 
-    self.scale, (self.scale*1.2), 0.4, 
+    self.scale, (self.scale*1.2), 0.8, 
     Tween.TRANS_QUINT, Tween.EASE_IN)
     
     TweenAnimator.interpolate_property(self, "modulate", 
-    Color(1, 1, 1, 1), Color(1, 1, 1, 0), 0.4, 
+    Color(1, 1, 1, 1), Color(1, 1, 1, 0), 0.8, 
     Tween.TRANS_QUINT, Tween.EASE_IN)
     TweenAnimator.start()
     
@@ -75,7 +73,7 @@ func init(coordinates: Vector2, Type: int):
 
 
 func _on_Tween_tween_completed(object, key):
-    playNextAnimation = true
+    pass
     
 
 func _on_Tween_tween_all_completed():

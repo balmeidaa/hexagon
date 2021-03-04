@@ -1,6 +1,5 @@
 extends Node2D
 
-onready var animationHandler = preload("Util/AnimationHandler.gd").new()
 onready var util = preload("Util/Util.gd").new()
 
 var screenHOffset = 80
@@ -22,12 +21,12 @@ const axial_directions = [
 
 const axis_direction = [
       { # Ejes pares
-       "L-R": [Vector2(-1, 0), Vector2(1, 0)],
+        "L-R": [Vector2(-1, 0), Vector2(1, 0)],
         "UpL-LoR":[Vector2(-1, -1), Vector2(0, 1)],
         "LoL-UpR": [Vector2(-1, 1), Vector2(0, -1)]
        },
        { # Ejes impares
-       "L-R": [Vector2(-1, 0), Vector2(1, 0)],
+        "L-R": [Vector2(-1, 0), Vector2(1, 0)],
         "UpL-LoR":[Vector2(0, -1), Vector2(1, 1)],
         "LoL-UpR": [Vector2(0, 1), Vector2(1, -1)]
        },
@@ -41,12 +40,14 @@ var grid = []
 var selectionStack = []
 var eliminationQueue = []
 var availableNeighbors = []
+var missingCells = []
 var gridArea = Rect2(origin, origin)
 
 const hex_factory = preload("res://HexCell.tscn")
 
 
 func _ready():
+    #util.rng.randomize()
     CellEventHandler.connect("cell_pressed", self, "cell_handler")
     CellEventHandler.connect("cell_removed", self, "cell_remover")
 
@@ -84,45 +85,47 @@ func check_cells_type():
    
     for hexCell in selectionStack:
         eliminationQueue += get_neighbors_w_direction(hexCell, get_cell_type(hexCell))
-
-
+    missingCells += eliminationQueue
+#buggg!
 func get_neighbors_w_direction(coord : Vector2, type :int)-> Array:
 
     var cells = []
     var parity = int(coord.y) & 1
-
-    for axis in axis_direction[parity].values():
+    print("axisNeigbors for" + String(coord) + " type " +String(type))
+    for axis in axis_direction[parity].keys():
         var axisNeigbors = []
-        for direction in axis:
-            axisNeigbors += get_line_cells(coord, direction, type)
-
+        print(axis)
+        axisNeigbors += get_line_cells(coord, axis, type)
+        #print(axisNeigbors)
         if axisNeigbors.size() >= 2:
             cells += axisNeigbors
     if cells.size() > 1:  
-        cells.push_front({
-            "coord":coord,
-            "type":type
-            })
+        cells.push_front(coord)
     return cells
 
-func get_line_cells(coord:Vector2, direction:Vector2, type:int):
+func get_line_cells(coord:Vector2, axis:String, type:int):
     var next = true
     var result = []
-    var nextCell = coord + direction
-    while next:
-     
-        if gridArea.has_point(nextCell):
-            var nextType = get_cell_type(nextCell)
-            if nextType == type:
-                result.append({
-                    "coord":nextCell,
-                    "type":type
-                   })
-                nextCell = nextCell + direction
+    var parity = int(coord.y) & 1
+    var nextCell = origin 
+    var axis_dir_list = axis_direction[parity][axis]
+    
+    for index in range(axis_dir_list.size()):     
+        nextCell = coord + axis_dir_list[index]
+        print(axis_dir_list[index])
+        while next:
+            if grid_has_cell(nextCell):
+                var nextType = get_cell_type(nextCell)
+                if nextType == type:
+                    result.append(nextCell)
+                    parity = int(nextCell.y) & 1
+                    var direction =  axis_direction[parity][axis][index]
+                    nextCell = nextCell + direction
+                else:
+                    next = false
             else:
                 next = false
-        else:
-            next = false
+        next = true
     return result
         
 
@@ -132,13 +135,13 @@ func get_neighbors(coord : Vector2) -> Array:
     var parity = int(coord.y) & 1
     for direction in axial_directions[parity]:
         var hex_coord = coord + direction
-        if gridArea.has_point(hex_coord):
+        if grid_has_cell(hex_coord):
             hex_neighbor.append(hex_coord)       
     return hex_neighbor
     
 func set_cells_state(cells : Array, state : String, active: bool) -> void:
-    for cell in cells:
-        var hex_cell = grid[int(cell.x)][int(cell.y)]
+    for cell_coord in cells:
+        var hex_cell = get_cell(cell_coord)
         hex_cell.set_button_state(state, active)
 
 func get_cell_type(coord : Vector2):
@@ -146,6 +149,9 @@ func get_cell_type(coord : Vector2):
   
 func get_cell(coord : Vector2):
     return grid[int(coord.x)][int(coord.y)] 
+
+func grid_has_cell(coord : Vector2)->bool:
+    return (gridArea.has_point(coord) and not missingCells.has(coord))
     
 func set_offset() -> void:
     var cell = hex_factory.instance()
@@ -202,8 +208,8 @@ func create_hex(x : int, y : int, scale : Vector2):
     cell.init(Vector2(x, y),  util.random())
     
     # remove debug code
-    var format_string = "%d-(%d,%d)"
-    var string = format_string % [cell.type,x,y]
+    var format_string = "%d" #-(%d,%d)"
+    var string = format_string % [cell.type]#,x,y]
     cell.set_text(string)
     ##
     add_child(cell)
@@ -223,11 +229,10 @@ func create_grid(vectorScale : Vector2, vectorGridSize : Vector2):
             grid[x].append([])
             grid[x][y]=create_hex(x, y, vectorScale)
 
-####
 func _process(_delta):
     if eliminationQueue.size() > 0:
-        for dict in eliminationQueue:
-            var cell = get_cell(dict["coord"])
+        for coord in eliminationQueue:
+            var cell = get_cell(coord)
             cell.set_animation_state("remove")
         eliminationQueue.clear()
            
