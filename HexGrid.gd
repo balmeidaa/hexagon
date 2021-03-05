@@ -29,33 +29,57 @@ const axis_direction = [
         "L-R": [Vector2(-1, 0), Vector2(1, 0)],
         "UpL-LoR":[Vector2(0, -1), Vector2(1, 1)],
         "LoL-UpR": [Vector2(0, 1), Vector2(1, -1)]
-       },
-    
+       }
 ]
 var gridSize = Vector2(0,0)
 var col = 0
 var row = 0
 var grid = []
-
+var vectorScale = Vector2(0,0)
 var selectionStack = []
 var eliminationQueue = []
 var availableNeighbors = []
 var missingCells = []
 var gridArea = Rect2(origin, origin)
 
+var ready_for_drop = false
 const hex_factory = preload("res://HexCell.tscn")
 
 
 func _ready():
-    #util.rng.randomize()
+    util.rng.randomize()
     CellEventHandler.connect("cell_pressed", self, "cell_handler")
     CellEventHandler.connect("cell_removed", self, "cell_remover")
 
+func _process(_delta):
+    
+    if eliminationQueue.size() > 0:
+        self.set_process(false)
+        for coord in eliminationQueue:
+            var cell = get_cell(coord)
+            cell.set_animation_state("remove")
+        eliminationQueue.clear()
+        self.set_process(true)
+        
+    if missingCells.size() > 0 and check_non_null_cells():
+        self.set_process(false)
+        drop_cells()
+        self.set_process(true)
+
+# Hay celdas no nulas en la lista? 
+func check_non_null_cells()->bool:
+    for cell in missingCells:
+        if is_instance_valid(grid[int(cell.x)][int(cell.y)]):
+            return false
+    return true
+        
+    
+     
 func cell_remover(coordinates: Vector2):
     var node = get_cell(coordinates)
     grid[int(coordinates.x)][int(coordinates.y)] = null
     node.call_deferred("free")
-
+    
 
 #TODO Rename this function
 # We check the selected cell  neighbors, for second selection we check if selected cell is a neighbor
@@ -73,8 +97,8 @@ func cell_handler(coordinates: Vector2):
                 availableNeighbors.clear()
              elif availableNeighbors.has(coordinates): 
                 selectionStack.push_back(coordinates)
-                set_cells_state(selectionStack, 'pressed', false)
                 swap_cells()
+                set_cells_state(selectionStack, 'pressed', false)
                 check_cells_type()
                 selectionStack.clear()
                 availableNeighbors.clear()
@@ -86,17 +110,14 @@ func check_cells_type():
     for hexCell in selectionStack:
         eliminationQueue += get_neighbors_w_direction(hexCell, get_cell_type(hexCell))
     missingCells += eliminationQueue
-#buggg!
-func get_neighbors_w_direction(coord : Vector2, type :int)-> Array:
 
+
+func get_neighbors_w_direction(coord : Vector2, type :int)-> Array:
     var cells = []
     var parity = int(coord.y) & 1
-    print("axisNeigbors for" + String(coord) + " type " +String(type))
     for axis in axis_direction[parity].keys():
         var axisNeigbors = []
-        print(axis)
         axisNeigbors += get_line_cells(coord, axis, type)
-        #print(axisNeigbors)
         if axisNeigbors.size() >= 2:
             cells += axisNeigbors
     if cells.size() > 1:  
@@ -112,7 +133,6 @@ func get_line_cells(coord:Vector2, axis:String, type:int):
     
     for index in range(axis_dir_list.size()):     
         nextCell = coord + axis_dir_list[index]
-        print(axis_dir_list[index])
         while next:
             if grid_has_cell(nextCell):
                 var nextType = get_cell_type(nextCell)
@@ -151,7 +171,7 @@ func get_cell(coord : Vector2):
     return grid[int(coord.x)][int(coord.y)] 
 
 func grid_has_cell(coord : Vector2)->bool:
-    return (gridArea.has_point(coord) and not missingCells.has(coord))
+    return (gridArea.has_point(coord) and  is_instance_valid(grid[int(coord.x)][int(coord.y)]))
     
 func set_offset() -> void:
     var cell = hex_factory.instance()
@@ -170,41 +190,16 @@ func swap_cells():
     # We swap internal grid coord in the cell // For debug purposes only
     grid[int(selectionStack[0].x)][int(selectionStack[0].y)].set_coord(selectionStack[0])
     grid[int(selectionStack[1].x)][int(selectionStack[1].y)].set_coord(selectionStack[1])
-    
-    # We swap screen positions too
-    # TODO use animation handler send { node , vector2d"}
-    
-#    var swapQueue = []
-#    var animation = 'move_to'
-#    for stack in selectionStack:
-#        var node = grid[int(stack.x)][int(stack.y)]
-#        var nextPosition = node.position
-#        node.set_animation_state("move_to", nextPosition)
-#        var dict = {
-#            "node": node,
-#            "animationType": animation,
-#            "nextPosition": nextPosition
-#           }
-#        swapQueue.append(dict)
-#    animationHandler.setQueueAnimation(swapQueue)
+
     grid[int(selectionStack[0].x)][int(selectionStack[0].y)].set_animation_state("move_to", cellAPos)
     grid[int(selectionStack[1].x)][int(selectionStack[1].y)].set_animation_state("move_to", cellBPos)
 
     
-func create_hex(x : int, y : int, scale : Vector2):
+func create_hex(x : int, y : int):
     var cell = hex_factory.instance()
-    var offsetX = 0
-    if (y%2)==1:
-        offsetX = offset.x/4
-
-    else:
-        offsetX = 0
-   
-    var posx = screenWoffset + (offset.x/2 * x) + offsetX 
-    var posy = screenHOffset + (offset.y/3 * y)  
-    var position = Vector2(posx,posy) 
+    var position = get_screen_position(x, y)
     cell.position = position
-    cell.scale = scale
+    cell.scale = vectorScale
     cell.init(Vector2(x, y),  util.random())
     
     # remove debug code
@@ -215,26 +210,76 @@ func create_hex(x : int, y : int, scale : Vector2):
     add_child(cell)
     return cell
 
-func create_grid(vectorScale : Vector2, vectorGridSize : Vector2):
+func get_screen_position(x : int, y : int):
+     var offsetX = 0
+    
+     if (y%2)==1:
+        offsetX = offset.x/4
+     else:
+        offsetX = 0
+   
+     var posx = screenWoffset + (offset.x/2 * x) + offsetX 
+     var posy = screenHOffset + (offset.y/3 * y)  
+     return Vector2(posx,posy) 
+
+func create_grid(scale : Vector2, vectorGridSize : Vector2):
     set_offset()
     gridSize = vectorGridSize
     gridArea = Rect2(origin, gridSize)
     col = vectorGridSize.x
     row = vectorGridSize.y
-    
+    vectorScale = scale
     for x in range(col):
         grid.append([])
         grid[x]=[]        
         for y in range(row):
             grid[x].append([])
-            grid[x][y]=create_hex(x, y, vectorScale)
+            grid[x][y]=create_hex(x, y)
 
-func _process(_delta):
-    if eliminationQueue.size() > 0:
-        for coord in eliminationQueue:
-            var cell = get_cell(coord)
-            cell.set_animation_state("remove")
-        eliminationQueue.clear()
-           
-           
+func drop_cells():
+    #"UpL-LoR":[Vector2(0, -1), Vector2(1, 1)], usar 0
+    #"LoL-UpR": [Vector2(0, 1), Vector2(1, -1)] usar 1
+    missingCells.sort_custom(self, "sort_cells")
+    while missingCells.size() > 0:
+        print(missingCells)
+        var voidCell = missingCells.pop_front()
+        
+        var parity = int(voidCell.y) & 1
+        var UpLeftCell = voidCell + axis_direction[parity]["UpL-LoR"][0]
+        var UpRightCell = voidCell + axis_direction[parity]["LoL-UpR"][1]
+        
+        var hasBoth =  (grid_has_cell(UpLeftCell) and  grid_has_cell(UpRightCell))
+        var direction = util.rng.randi_range(0, 1)
+       
+        if hasBoth:
+            if direction:
+                move_cell_to(UpRightCell, voidCell)
+            else:
+                move_cell_to(UpLeftCell, voidCell)
+
+        elif grid_has_cell(UpLeftCell):
+            move_cell_to(UpLeftCell, voidCell)
             
+        elif grid_has_cell(UpRightCell):
+             move_cell_to(UpRightCell, voidCell)
+        elif voidCell.y == 0:
+            drop_new([voidCell])
+        else:
+            missingCells.append(voidCell)
+    
+func drop_new(newCells:Array):
+    for new in newCells:
+        var node = create_hex(int(new.x),0)
+        grid[int(new.x)][0] = node
+        node.set_animation_state("appear")
+    
+func move_cell_to(origin:Vector2, destination:Vector2):
+    var cell = get_cell(origin)
+    grid[int(origin.x)][int(origin.y)] = null
+    grid[int(destination.x)][int(destination.y)] = cell
+    cell.set_coord(destination)
+    cell.set_animation_state("move_to", get_screen_position(int(destination.x), int(destination.y)))
+    missingCells.append(origin)
+    
+func sort_cells(a:Vector2, b:Vector2):
+    return a.y > b.y

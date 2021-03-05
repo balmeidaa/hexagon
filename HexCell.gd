@@ -19,6 +19,8 @@ func _process(_delta):
                 move_to()
             "remove":
                 remove()
+            "appear":
+                appear()
             _:
                 pass
 
@@ -50,12 +52,17 @@ func move_to():
         self.position, nextPosition.pop_front(), 0.5,
         Tween.TRANS_QUART, Tween.EASE_IN_OUT)
     TweenAnimator.start()
-    
-    
 
-func circular_motion():
-    var radius = $Self.position.distance_to(nextPosition)/2
-    pass
+
+func appear():
+    TweenAnimator.interpolate_property(self, "scale", 
+    self.scale * 0.2, self.scale, 0.8, 
+    Tween.TRANS_QUINT, Tween.EASE_OUT)
+    
+    TweenAnimator.interpolate_property(self, "modulate", 
+    Color(1, 1, 1, 0), Color(1, 1, 1, 1), 0.8, 
+    Tween.TRANS_QUINT, Tween.EASE_IN)
+    TweenAnimator.start() 
 
 func remove():
     TweenAnimator.interpolate_property(self, "scale", 
