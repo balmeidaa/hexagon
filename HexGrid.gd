@@ -40,6 +40,9 @@ var selectionStack = []
 var eliminationQueue = []
 var availableNeighbors = []
 var missingCells = []
+var nextToDrop = []
+var newCells = []
+var droppedCells = []
 var gridArea = Rect2(origin, origin)
 
 var ready_for_drop = false
@@ -53,22 +56,33 @@ func _ready():
 
 func _process(_delta):
     
+    self.set_process(false)
+    # remove cells
     if eliminationQueue.size() > 0:
-        self.set_process(false)
         for coord in eliminationQueue:
             var cell = get_cell(coord)
             cell.set_animation_state("remove")
-        eliminationQueue.clear()
-        self.set_process(true)
         
-    if missingCells.size() > 0 and check_non_null_cells():
-        self.set_process(false)
+        eliminationQueue.clear()
+        
+   # drop cells below
+    if missingCells.size() > 0 and check_non_null_cells(missingCells):
         drop_cells()
-        self.set_process(true)
+        missingCells += nextToDrop
+        nextToDrop.clear()
+#    if newCells.size() > 0:
+#        drop_new() 
+     # check for dropped cells for 3 of more in lines
+    if droppedCells.size() > 0 and not check_non_null_cells(droppedCells):
+        check_cells_type(droppedCells)
+        droppedCells.clear()
+     
+    self.set_process(true)
+    
 
 # Hay celdas no nulas en la lista? 
-func check_non_null_cells()->bool:
-    for cell in missingCells:
+func check_non_null_cells(cells: Array)->bool:
+    for cell in cells:
         if is_instance_valid(grid[int(cell.x)][int(cell.y)]):
             return false
     return true
@@ -78,7 +92,7 @@ func check_non_null_cells()->bool:
 func cell_remover(coordinates: Vector2):
     var node = get_cell(coordinates)
     grid[int(coordinates.x)][int(coordinates.y)] = null
-    node.call_deferred("free")
+    node.queue_free()
     
 
 #TODO Rename this function
@@ -99,15 +113,15 @@ func cell_handler(coordinates: Vector2):
                 selectionStack.push_back(coordinates)
                 swap_cells()
                 set_cells_state(selectionStack, 'pressed', false)
-                check_cells_type()
+                check_cells_type(selectionStack)
                 selectionStack.clear()
                 availableNeighbors.clear()
              else:
                 set_cells_state([coordinates], 'pressed', false)
                 
-func check_cells_type():
+func check_cells_type(stack: Array):
    
-    for hexCell in selectionStack:
+    for hexCell in stack:
         eliminationQueue += get_neighbors_w_direction(hexCell, get_cell_type(hexCell))
     missingCells += eliminationQueue
 
@@ -220,6 +234,7 @@ func get_screen_position(x : int, y : int):
    
      var posx = screenWoffset + (offset.x/2 * x) + offsetX 
      var posy = screenHOffset + (offset.y/3 * y)  
+
      return Vector2(posx,posy) 
 
 func create_grid(scale : Vector2, vectorGridSize : Vector2):
@@ -237,17 +252,18 @@ func create_grid(scale : Vector2, vectorGridSize : Vector2):
             grid[x][y]=create_hex(x, y)
 
 func drop_cells():
-    #"UpL-LoR":[Vector2(0, -1), Vector2(1, 1)], usar 0
-    #"LoL-UpR": [Vector2(0, 1), Vector2(1, -1)] usar 1
+
     missingCells.sort_custom(self, "sort_cells")
+    missingCells = util.remove_dupes(missingCells)
+
     while missingCells.size() > 0:
-        print(missingCells)
+      
         var voidCell = missingCells.pop_front()
-        
+       
         var parity = int(voidCell.y) & 1
         var UpLeftCell = voidCell + axis_direction[parity]["UpL-LoR"][0]
         var UpRightCell = voidCell + axis_direction[parity]["LoL-UpR"][1]
-        
+
         var hasBoth =  (grid_has_cell(UpLeftCell) and  grid_has_cell(UpRightCell))
         var direction = util.rng.randi_range(0, 1)
        
@@ -262,16 +278,20 @@ func drop_cells():
             
         elif grid_has_cell(UpRightCell):
              move_cell_to(UpRightCell, voidCell)
+
         elif voidCell.y == 0:
-            drop_new([voidCell])
+            newCells.append(voidCell)
+
         else:
-            missingCells.append(voidCell)
-    
-func drop_new(newCells:Array):
+            nextToDrop.append(voidCell)
+
+#TODO debug this func
+func drop_new():
     for new in newCells:
         var node = create_hex(int(new.x),0)
         grid[int(new.x)][0] = node
         node.set_animation_state("appear")
+    newCells.clear()
     
 func move_cell_to(origin:Vector2, destination:Vector2):
     var cell = get_cell(origin)
@@ -279,7 +299,9 @@ func move_cell_to(origin:Vector2, destination:Vector2):
     grid[int(destination.x)][int(destination.y)] = cell
     cell.set_coord(destination)
     cell.set_animation_state("move_to", get_screen_position(int(destination.x), int(destination.y)))
-    missingCells.append(origin)
+    nextToDrop.append(origin)
+    droppedCells.append(destination)
+
     
 func sort_cells(a:Vector2, b:Vector2):
     return a.y > b.y

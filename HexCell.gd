@@ -8,8 +8,6 @@ var animationState = []
 var nextPosition = []
 var animation = ""
 
-func _ready():
-    TweenAnimator.connect("tween_completed", self, "continue_animation")
     
 func _process(_delta):
     if animationState.size() > 0 :
@@ -54,14 +52,10 @@ func move_to():
     TweenAnimator.start()
 
 
-func appear():
-    TweenAnimator.interpolate_property(self, "scale", 
-    self.scale * 0.2, self.scale, 0.8, 
-    Tween.TRANS_QUINT, Tween.EASE_OUT)
-    
+func appear():    
     TweenAnimator.interpolate_property(self, "modulate", 
-    Color(1, 1, 1, 0), Color(1, 1, 1, 1), 0.8, 
-    Tween.TRANS_QUINT, Tween.EASE_IN)
+    Color(1, 1, 1, 0.3), Color(1, 1, 1, 1), 0.5, 
+    Tween.TRANS_QUART, Tween.EASE_IN_OUT)
     TweenAnimator.start() 
 
 func remove():
@@ -77,12 +71,12 @@ func remove():
 func init(coordinates: Vector2, Type: int):
     coord = coordinates
     type = Type
-
-
-func _on_Tween_tween_completed(object, key):
-    pass
     
 
 func _on_Tween_tween_all_completed():
+    
     if animation == 'remove':
+         TweenAnimator.stop_all()
          CellEventHandler.cell_removed(coord)
+         
+

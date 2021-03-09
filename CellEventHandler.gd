@@ -2,9 +2,6 @@ extends Node
 signal cell_pressed
 signal cell_removed
 
-
-
-
 func _ready():
     pass # Replace with function body.
 
