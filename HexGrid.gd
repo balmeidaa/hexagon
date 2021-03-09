@@ -70,8 +70,8 @@ func _process(_delta):
         drop_cells()
         missingCells += nextToDrop
         nextToDrop.clear()
-#    if newCells.size() > 0:
-#        drop_new() 
+    if newCells.size() > 0:
+        drop_new() 
      # check for dropped cells for 3 of more in lines
     if droppedCells.size() > 0 and not check_non_null_cells(droppedCells):
         check_cells_type(droppedCells)
@@ -215,6 +215,7 @@ func create_hex(x : int, y : int):
     cell.position = position
     cell.scale = vectorScale
     cell.init(Vector2(x, y),  util.random())
+    cell.set_animation_state("appear")
     
     # remove debug code
     var format_string = "%d" #-(%d,%d)"

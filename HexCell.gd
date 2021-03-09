@@ -40,7 +40,8 @@ func set_button_state(state:String, active: bool):
     
 func set_animation_state(newState:String, position: Vector2 = Vector2(0,0)):
     animationState.append(newState)
-    nextPosition.append(position)
+    if position !=  Vector2(0,0):
+        nextPosition.append(position)
 
 func _on_Cell_pressed():
     CellEventHandler.cell_pressed(coord)
@@ -51,10 +52,10 @@ func move_to():
         Tween.TRANS_QUART, Tween.EASE_IN_OUT)
     TweenAnimator.start()
 
-
+# rework this tween
 func appear():    
     TweenAnimator.interpolate_property(self, "modulate", 
-    Color(1, 1, 1, 0.3), Color(1, 1, 1, 1), 0.5, 
+    Color(1, 1, 1, 0.3), Color(1, 1, 1, 1), 1.5, 
     Tween.TRANS_QUART, Tween.EASE_IN_OUT)
     TweenAnimator.start() 
 
