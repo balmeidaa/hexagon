@@ -59,15 +59,17 @@ func _process(_delta):
     self.set_process(false)
     # remove cells
     if eliminationQueue.size() > 0:
+        
         for coord in eliminationQueue:
             var cell = get_cell(coord)
             cell.set_animation_state("remove")
-        
+
         eliminationQueue.clear()
         
    # drop cells below
     if missingCells.size() > 0 and check_non_null_cells(missingCells):
         drop_cells()
+
         missingCells += nextToDrop
         nextToDrop.clear()
     if newCells.size() > 0:
@@ -110,6 +112,7 @@ func cell_handler(coordinates: Vector2):
                 selectionStack.clear()
                 availableNeighbors.clear()
              elif availableNeighbors.has(coordinates): 
+
                 selectionStack.push_back(coordinates)
                 swap_cells()
                 set_cells_state(selectionStack, 'pressed', false)
@@ -121,10 +124,22 @@ func cell_handler(coordinates: Vector2):
                 
 func check_cells_type(stack: Array):
    
+    var scoreCells = 0
+    var comboCounter = 0
+    var cellsRemoved = []
     for hexCell in stack:
-        eliminationQueue += get_neighbors_w_direction(hexCell, get_cell_type(hexCell))
+        cellsRemoved = get_neighbors_w_direction(hexCell, get_cell_type(hexCell))
+        scoreCells += cellsRemoved.size()
+        if cellsRemoved.size() > 0:
+            comboCounter += 1
+        eliminationQueue += cellsRemoved
     missingCells += eliminationQueue
-
+    
+    if comboCounter > 0:
+        scoreCells = scoreCells * comboCounter
+    
+    ScoreEventHandler.update_score(scoreCells)
+    ScoreEventHandler.update_combo(comboCounter)
 
 func get_neighbors_w_direction(coord : Vector2, type :int)-> Array:
     var cells = []

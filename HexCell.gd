@@ -2,14 +2,14 @@ extends Node2D
 onready var TweenAnimator = $Tween
 var type = 0
 var coord = Vector2(0,0)
-const animationStateEnum = ['idle','selected','move_to','circular_motion','remove','default']
 
 var animationState = []
 var nextPosition = []
 var animation = ""
-
+onready var util = preload("Util/Util.gd").new()
     
 func _process(_delta):
+        
     if animationState.size() > 0 :
         animation = animationState.pop_front()
         match animation:
@@ -28,6 +28,16 @@ func set_text(text):
 
 func set_type(newType : int):
     type = newType
+    load_texture()
+
+func load_texture():
+    var formatFileString = "res://Assets/Img/%s.png"
+#    print(util.Elements.keys())
+    var file_name = formatFileString % String(type)
+    if type == 0:
+        $Button.disabled = true
+        $Button.set_normal_texture(load(file_name))
+        
 
 func get_size():
     return $Button.get_size()
@@ -52,11 +62,12 @@ func move_to():
         Tween.TRANS_QUART, Tween.EASE_IN_OUT)
     TweenAnimator.start()
 
+
 # rework this tween
 func appear():    
     TweenAnimator.interpolate_property(self, "modulate", 
-    Color(1, 1, 1, 0.3), Color(1, 1, 1, 1), 1.5, 
-    Tween.TRANS_QUART, Tween.EASE_IN_OUT)
+    Color(1, 1, 1, 0.3), Color(1, 1, 1, 1), 0.5, 
+    Tween.TRANS_LINEAR)
     TweenAnimator.start() 
 
 func remove():
@@ -68,10 +79,12 @@ func remove():
     Color(1, 1, 1, 1), Color(1, 1, 1, 0), 0.8, 
     Tween.TRANS_QUINT, Tween.EASE_IN)
     TweenAnimator.start()
-    
+
+
 func init(coordinates: Vector2, Type: int):
     coord = coordinates
     type = Type
+    load_texture()
     
 
 func _on_Tween_tween_all_completed():

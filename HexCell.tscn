@@ -1,11 +1,8 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://HexCell.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Img/hex.png" type="Texture" id=2]
 [ext_resource path="res://Assets/Fonts/ubuntu.ttf" type="DynamicFontData" id=3]
-[ext_resource path="res://Assets/Img/hex - disabled.png" type="Texture" id=4]
-[ext_resource path="res://Assets/Img/hex_over.png" type="Texture" id=5]
-[ext_resource path="res://Assets/Img/hex - pressed.png" type="Texture" id=6]
 [ext_resource path="res://Assets/Img/map.png" type="BitMap" id=7]
 
 [sub_resource type="DynamicFont" id=1]
@@ -24,9 +21,6 @@ margin_bottom = 84.0
 toggle_mode = true
 action_mode = 0
 texture_normal = ExtResource( 2 )
-texture_pressed = ExtResource( 6 )
-texture_hover = ExtResource( 5 )
-texture_disabled = ExtResource( 4 )
 texture_click_mask = ExtResource( 7 )
 expand = true
 stretch_mode = 3

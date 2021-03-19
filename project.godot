@@ -22,6 +22,11 @@ config/icon="res://icon.png"
 [autoload]
 
 CellEventHandler="*res://CellEventHandler.gd"
+ScoreEventHandler="*res://ScoreEventHandler.gd"
+
+[display]
+
+window/size/resizable=false
 
 [rendering]
 

@@ -1,6 +1,6 @@
 extends Node
 
-enum Elements {FIRE, ICE, WATER, EARTH}
+enum Elements {STATIC,FIRE, ICE, WATER, EARTH}#, WIND, METAL, ENERGY}
 var rng = RandomNumberGenerator.new()
 
     
