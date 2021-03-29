@@ -26,6 +26,7 @@ ScoreEventHandler="*res://ScoreEventHandler.gd"
 
 [display]
 
+window/size/height=800
 window/size/resizable=false
 
 [rendering]

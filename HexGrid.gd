@@ -2,7 +2,7 @@ extends Node2D
 
 onready var util = preload("Util/Util.gd").new()
 
-var screenHOffset = 80
+var screenHOffset = 200
 var screenWoffset = 60
 
 var offset = Vector2(0,0)
@@ -89,8 +89,7 @@ func check_non_null_cells(cells: Array)->bool:
             return false
     return true
         
-    
-     
+       
 func cell_remover(coordinates: Vector2):
     var node = get_cell(coordinates)
     grid[int(coordinates.x)][int(coordinates.y)] = null
@@ -111,16 +110,16 @@ func cell_handler(coordinates: Vector2):
              if coordinates == selectionStack[0]:
                 selectionStack.clear()
                 availableNeighbors.clear()
-             elif availableNeighbors.has(coordinates): 
-
+                set_cells_state([coordinates], 'pressed', false)
+             elif availableNeighbors.has(coordinates):
                 selectionStack.push_back(coordinates)
                 swap_cells()
                 set_cells_state(selectionStack, 'pressed', false)
                 check_cells_type(selectionStack)
                 selectionStack.clear()
                 availableNeighbors.clear()
-             else:
-                set_cells_state([coordinates], 'pressed', false)
+                ScoreEventHandler.update_turns_left()
+             
                 
 func check_cells_type(stack: Array):
    
@@ -128,10 +127,15 @@ func check_cells_type(stack: Array):
     var comboCounter = 0
     var cellsRemoved = []
     for hexCell in stack:
-        cellsRemoved = get_neighbors_w_direction(hexCell, get_cell_type(hexCell))
+        var cell_type = get_cell_type(hexCell)
+        cellsRemoved = get_neighbors_w_direction(hexCell, cell_type)
         scoreCells += cellsRemoved.size()
+        
+        ScoreEventHandler.update_score(scoreCells)
         if cellsRemoved.size() > 0:
             comboCounter += 1
+            ScoreEventHandler.update_combo(comboCounter)
+            ScoreEventHandler.update_type_elimination(cell_type, cellsRemoved.size())
         eliminationQueue += cellsRemoved
     missingCells += eliminationQueue
     
@@ -191,6 +195,7 @@ func get_neighbors(coord : Vector2) -> Array:
 func set_cells_state(cells : Array, state : String, active: bool) -> void:
     for cell_coord in cells:
         var hex_cell = get_cell(cell_coord)
+        print(cell_coord)
         hex_cell.set_button_state(state, active)
 
 func get_cell_type(coord : Vector2):

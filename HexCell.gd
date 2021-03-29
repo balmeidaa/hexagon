@@ -6,7 +6,7 @@ var coord = Vector2(0,0)
 var animationState = []
 var nextPosition = []
 var animation = ""
-onready var util = preload("Util/Util.gd").new()
+var util = preload("Util/Util.gd").new()
     
 func _process(_delta):
         
@@ -32,9 +32,9 @@ func set_type(newType : int):
 
 func load_texture():
     var formatFileString = "res://Assets/Img/%s.png"
-#    print(util.Elements.keys())
-    var file_name = formatFileString % String(type)
+
     if type == 0:
+        var file_name = formatFileString % util.Elements.keys()[type].to_lower()
         $Button.disabled = true
         $Button.set_normal_texture(load(file_name))
         
@@ -55,6 +55,7 @@ func set_animation_state(newState:String, position: Vector2 = Vector2(0,0)):
 
 func _on_Cell_pressed():
     CellEventHandler.cell_pressed(coord)
+
 
 func move_to():
     TweenAnimator.interpolate_property(self, "position",

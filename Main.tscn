@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://HexGrid.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Main.gd" type="Script" id=2]
@@ -6,19 +6,31 @@
 [ext_resource path="res://Assets/Fonts/snap_2_grid.ttf" type="DynamicFontData" id=5]
 
 [sub_resource type="DynamicFont" id=1]
-size = 60
+size = 50
 outline_size = 2
 outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
 font_data = ExtResource( 5 )
 
 [sub_resource type="DynamicFont" id=2]
-size = 60
+size = 50
 outline_size = 2
 outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
 font_data = ExtResource( 5 )
 
 [sub_resource type="DynamicFont" id=3]
-size = 60
+size = 50
+outline_size = 2
+outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 40
+outline_size = 2
+outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 40
 outline_size = 2
 outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
 font_data = ExtResource( 5 )
@@ -29,52 +41,77 @@ script = ExtResource( 2 )
 [node name="GUI" type="MarginContainer" parent="."]
 anchor_right = 1.0
 margin_right = 1024.0
-margin_bottom = 56.0
-rect_min_size = Vector2( 1024, 50 )
+margin_bottom = 150.0
+rect_min_size = Vector2( 1024, 150 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Container" type="HBoxContainer" parent="GUI"]
+[node name="Container" type="VBoxContainer" parent="GUI"]
 margin_right = 1024.0
-margin_bottom = 56.0
-rect_min_size = Vector2( 1024, 50 )
+margin_bottom = 150.0
+
+[node name="Scoreboard" type="HBoxContainer" parent="GUI/Container"]
+margin_right = 1024.0
+margin_bottom = 65.0
+rect_min_size = Vector2( 1024, 65 )
 custom_constants/separation = 100
 alignment = 1
 
-[node name="Score" type="Label" parent="GUI/Container"]
-margin_left = 66.0
-margin_top = 7.0
-margin_right = 274.0
-margin_bottom = 49.0
+[node name="Score" type="Label" parent="GUI/Container/Scoreboard"]
+margin_left = 118.0
+margin_top = 15.0
+margin_right = 295.0
+margin_bottom = 50.0
 custom_fonts/font = SubResource( 1 )
 text = "Score: 000"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TurnsLeft" type="Label" parent="GUI/Container"]
-margin_left = 374.0
-margin_top = 7.0
-margin_right = 658.0
-margin_bottom = 49.0
+[node name="TurnsLeft" type="Label" parent="GUI/Container/Scoreboard"]
+margin_left = 395.0
+margin_top = 15.0
+margin_right = 636.0
+margin_bottom = 50.0
 custom_fonts/font = SubResource( 2 )
 text = "Turns Left: 10"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Combo" type="Label" parent="GUI/Container"]
-margin_left = 758.0
-margin_top = 7.0
-margin_right = 958.0
-margin_bottom = 49.0
+[node name="Combo" type="Label" parent="GUI/Container/Scoreboard"]
+margin_left = 736.0
+margin_top = 15.0
+margin_right = 906.0
+margin_bottom = 50.0
 custom_fonts/font = SubResource( 3 )
 text = "Combo: 0X"
 align = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Goals" type="VBoxContainer" parent="GUI/Container"]
+margin_top = 69.0
+margin_right = 1024.0
+margin_bottom = 135.0
+custom_constants/separation = 10
+alignment = 1
+
+[node name="MainGoal" type="Label" parent="GUI/Container/Goals"]
+margin_right = 1024.0
+margin_bottom = 28.0
+custom_fonts/font = SubResource( 4 )
+text = "Main goal: 0 points"
+valign = 2
+
+[node name="BonusGoal" type="Label" parent="GUI/Container/Goals"]
+margin_top = 38.0
+margin_right = 1024.0
+margin_bottom = 66.0
+custom_fonts/font = SubResource( 5 )
+text = "bonus: 0x combo"
 
 [node name="HexGrid" parent="." instance=ExtResource( 1 )]
 
