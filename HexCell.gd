@@ -33,7 +33,8 @@ func set_type(newType : int):
 func load_texture():
     var formatFileString = "res://Assets/Img/%s.png"
 
-    if type == 0:
+    if type == util.Elements.STATIC or type == util.Elements.STATIC_2:
+        # TODO when texture available remove the load function outside of the if
         var file_name = formatFileString % util.Elements.keys()[type].to_lower()
         $Button.disabled = true
         $Button.set_normal_texture(load(file_name))

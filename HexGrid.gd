@@ -128,6 +128,9 @@ func check_cells_type(stack: Array):
     var cellsRemoved = []
     for hexCell in stack:
         var cell_type = get_cell_type(hexCell)
+        # Check for static cells to avoid removing them
+        if cell_type == util.Elements.STATIC:
+            continue
         cellsRemoved = get_neighbors_w_direction(hexCell, cell_type)
         scoreCells += cellsRemoved.size()
         
@@ -137,6 +140,7 @@ func check_cells_type(stack: Array):
             ScoreEventHandler.update_combo(comboCounter)
             ScoreEventHandler.update_type_elimination(cell_type, cellsRemoved.size())
         eliminationQueue += cellsRemoved
+        
     missingCells += eliminationQueue
     
     if comboCounter > 0:
@@ -195,7 +199,6 @@ func get_neighbors(coord : Vector2) -> Array:
 func set_cells_state(cells : Array, state : String, active: bool) -> void:
     for cell_coord in cells:
         var hex_cell = get_cell(cell_coord)
-        print(cell_coord)
         hex_cell.set_button_state(state, active)
 
 func get_cell_type(coord : Vector2):
@@ -285,32 +288,28 @@ func drop_cells():
         var UpLeftCell = voidCell + axis_direction[parity]["UpL-LoR"][0]
         var UpRightCell = voidCell + axis_direction[parity]["LoL-UpR"][1]
 
-        var hasBoth =  (grid_has_cell(UpLeftCell) and  grid_has_cell(UpRightCell))
-        var direction = util.rng.randi_range(0, 1)
-       
-        if hasBoth:
-            if direction:
-                move_cell_to(UpRightCell, voidCell)
-            else:
-                move_cell_to(UpLeftCell, voidCell)
-
-        elif grid_has_cell(UpLeftCell):
+        var UpLeftCellType =  get_cell_type(UpLeftCell)  if grid_has_cell(UpLeftCell) else 0
+        var UpRightCellType =  get_cell_type(UpRightCell)  if grid_has_cell(UpRightCell) else 0
+        
+        if grid_has_cell(UpLeftCell) and UpLeftCellType > 0:
             move_cell_to(UpLeftCell, voidCell)
             
-        elif grid_has_cell(UpRightCell):
+        elif grid_has_cell(UpRightCell) and UpRightCellType > 0:
              move_cell_to(UpRightCell, voidCell)
 
         elif voidCell.y == 0:
             newCells.append(voidCell)
-
+        
+        elif UpRightCellType == 0 and UpLeftCellType == 0:
+            newCells.append(voidCell)
+            
         else:
             nextToDrop.append(voidCell)
 
-#TODO debug this func
 func drop_new():
     for new in newCells:
-        var node = create_hex(int(new.x),0)
-        grid[int(new.x)][0] = node
+        var node = create_hex(int(new.x),int(new.y))
+        grid[int(new.x)][int(new.y)] = node
         node.set_animation_state("appear")
     newCells.clear()
     

@@ -22,22 +22,22 @@ const combo_goal = 0
 const points_goal = 1
 const elimination_goal = 2
 
-var formatScore = "Score: %d" 
+var formatScore = "Score: %s" 
 var formatCombo = "Best Combo: %sx" 
-var formatTurnsLeft = "Turns Left: %d" 
+var formatTurnsLeft = "Turns Left: %s" 
 var formatMainGoal = "Goal: %s"
 var formatBonusGoal = "Bonus Goal: %s"
 
 #TODO create a game loop
 func _ready():
-
+    util.rng.randomize()
     var vectorScale = Vector2(cellScale, cellScale)
     var vectorGridSize = Vector2(13,10)
     reset()
         
     ScoreEventHandler.connect("score", self, "update_score")
     ScoreEventHandler.connect("combo", self, "update_combo")
-    ScoreEventHandler.connect("type_elimination", self, "check_type_goal")
+    ScoreEventHandler.connect("type_elimination", self, "check_elimination_goal")
     ScoreEventHandler.connect("turns_left", self, "update_turns_left")
         
     $HexGrid.create_grid(vectorScale, vectorGridSize)
@@ -46,10 +46,11 @@ func _ready():
 func _process(_delta):
     check_goals_acheived()
   
-func check_type_goal(type:int, amount:int):
+func check_elimination_goal(type:int, amount:int):
     for goal in goalGenerator.defined_goals:
-        if goal["objective"] == elimination_goal and goal["cell_type"] == type:
+        if goal["goal"] == elimination_goal and goal["cell_type"] == type:
             type_counter += amount
+
 # todo condition for next level
 func check_goals_acheived():
     var objectiveCompleteText = "Complete!"
@@ -67,9 +68,9 @@ func check_goals_acheived():
                     if type_counter >= goal['objective']: 
                         goalComplete = true
             if goal["main_goal"] and goalComplete:
-                set_label_text_combo(mainGoalLabel, formatMainGoal, objectiveCompleteText)
+                set_label_text(mainGoalLabel, formatMainGoal, objectiveCompleteText)
             elif goalComplete:
-                set_label_text_combo(bonusGoalLabel, formatBonusGoal, objectiveCompleteText)
+                set_label_text(bonusGoalLabel, formatBonusGoal, objectiveCompleteText)
         
 
 
@@ -78,14 +79,15 @@ func reset():
     combo = 0
     turns_left = 20
     type_counter = 0
+    var cell_type_goal = util.rng.randi_range(2, util.Elements.size()-1)
     set_label_text(scoreLabel, formatScore, score)
     set_label_text(comboLabel, formatCombo, combo)
     set_label_text(turnsLabel, formatTurnsLeft, turns_left)
-    goalGenerator.set_goals(true, level)
-    goalGenerator.set_goals(false, level)
+    goalGenerator.set_goals(true,1, level)
+    goalGenerator.set_goals(false,2, level, cell_type_goal)
+    
     for goal in goalGenerator.defined_goals:
-        var goalText = ''
-        
+        var goalText = ''    
         match goal["goal"]:
              combo_goal:
                goalText = "Get a %dx Combo" %  goal["objective"]   
@@ -96,9 +98,9 @@ func reset():
                 goalText = "Eliminate %d %s cells" %  [goal["objective"], type_cell]
         
         if goal["main_goal"]:
-             set_label_text_combo(mainGoalLabel, formatMainGoal, goalText)
+             set_label_text(mainGoalLabel, formatMainGoal, goalText)
         else:
-            set_label_text_combo(bonusGoalLabel, formatBonusGoal, goalText)
+            set_label_text(bonusGoalLabel, formatBonusGoal, goalText)
                 
 func update_turns_left():
     turns_left -= 1
@@ -113,8 +115,7 @@ func update_combo(updateCombo:int):
         combo = updateCombo    
         set_label_text(comboLabel, formatCombo, combo)
     
-func set_label_text(label: Label,format: String, val: int):
-    label.text = format %  val
+func set_label_text(label: Label,format: String, val):
+    label.text = format %  String(val)
     
-func set_label_text_combo(label: Label,format: String, val: String):
-    label.text = format %  val
+

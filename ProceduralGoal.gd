@@ -12,11 +12,9 @@ var defined_goals = []
  
 var util = preload("Util/Util.gd").new()     
 
-func set_goals(main_goal: bool, level: int):
-     util.rng.randomize()
-     var goal = util.rng.randi_range(0, goals.size()-1)
+func set_goals(main_goal: bool, goal: int, level: int, cell_type: int = 0):
+
      var objective = 0
-     var cell_type = 0
      match goal:
         0: #combo
             objective = util.rng.randi_range(2, 8)
@@ -24,7 +22,7 @@ func set_goals(main_goal: bool, level: int):
             objective = level * 50
         2:#type
             objective = level * 3
-            cell_type = util.rng.randi_range(1, util.Elements.size())
+
      
      defined_goals.append({
         "main_goal": main_goal,
