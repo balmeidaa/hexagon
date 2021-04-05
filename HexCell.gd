@@ -56,14 +56,14 @@ func set_animation_state(newState:String, position: Vector2 = Vector2(0,0)):
 
 func _on_Cell_pressed():
     CellEventHandler.cell_pressed(coord)
-
+    print(type)
 
 func move_to():
     TweenAnimator.interpolate_property(self, "position",
-        self.position, nextPosition.pop_front(), 0.5,
+        self.position, nextPosition.pop_front(), 0.3,
         Tween.TRANS_QUART, Tween.EASE_IN_OUT)
     TweenAnimator.start()
-
+    $SwapAudio.play()
 
 # rework this tween
 func appear():    
@@ -74,13 +74,14 @@ func appear():
 
 func remove():
     TweenAnimator.interpolate_property(self, "scale", 
-    self.scale, (self.scale*1.2), 0.8, 
+    self.scale, (self.scale*1.2), 0.5, 
     Tween.TRANS_QUINT, Tween.EASE_IN)
     
     TweenAnimator.interpolate_property(self, "modulate", 
-    Color(1, 1, 1, 1), Color(1, 1, 1, 0), 0.8, 
+    Color(1, 1, 1, 1), Color(1, 1, 1, 0), 0.5, 
     Tween.TRANS_QUINT, Tween.EASE_IN)
     TweenAnimator.start()
+    $RemoveAudio.play()
 
 
 func init(coordinates: Vector2, Type: int):
@@ -90,7 +91,6 @@ func init(coordinates: Vector2, Type: int):
     
 
 func _on_Tween_tween_all_completed():
-    
     if animation == 'remove':
          TweenAnimator.stop_all()
          CellEventHandler.cell_removed(coord)

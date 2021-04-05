@@ -96,7 +96,6 @@ func cell_remover(coordinates: Vector2):
     node.queue_free()
     
 
-#TODO Rename this function
 # We check the selected cell  neighbors, for second selection we check if selected cell is a neighbor
 # else the cell should un select
 func cell_handler(coordinates: Vector2):
@@ -268,12 +267,14 @@ func create_grid(scale : Vector2, vectorGridSize : Vector2):
     col = vectorGridSize.x
     row = vectorGridSize.y
     vectorScale = scale
+    
     for x in range(col):
         grid.append([])
         grid[x]=[]        
         for y in range(row):
             grid[x].append([])
             grid[x][y]=create_hex(x, y)
+
 
 func drop_cells():
 
@@ -321,7 +322,13 @@ func move_cell_to(origin:Vector2, destination:Vector2):
     cell.set_animation_state("move_to", get_screen_position(int(destination.x), int(destination.y)))
     nextToDrop.append(origin)
     droppedCells.append(destination)
-
     
 func sort_cells(a:Vector2, b:Vector2):
     return a.y > b.y
+
+
+        
+        
+     
+
+            

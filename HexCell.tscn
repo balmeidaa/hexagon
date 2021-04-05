@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://HexCell.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Img/hex.png" type="Texture" id=2]
 [ext_resource path="res://Assets/Fonts/ubuntu.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://Assets/Img/pressed.png" type="Texture" id=4]
+[ext_resource path="res://Assets/sfx/woosh.wav" type="AudioStream" id=5]
 [ext_resource path="res://Assets/Img/map.png" type="BitMap" id=7]
 
 [sub_resource type="DynamicFont" id=1]
@@ -48,5 +49,10 @@ __meta__ = {
 }
 
 [node name="Tween" type="Tween" parent="."]
+
+[node name="SwapAudio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 5 )
+
+[node name="RemoveAudio" type="AudioStreamPlayer2D" parent="."]
 [connection signal="pressed" from="Button" to="." method="_on_Cell_pressed"]
 [connection signal="tween_all_completed" from="Tween" to="." method="_on_Tween_tween_all_completed"]

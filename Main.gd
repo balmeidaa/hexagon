@@ -16,7 +16,7 @@ var combo = 0
 var level = 1
 var type_counter = 0
 # TODO How to calculate turns the player has left
-var turns_left = 20
+var turns_left = 1
 
 const combo_goal = 0
 const points_goal = 1
@@ -27,12 +27,15 @@ var formatCombo = "Best Combo: %sx"
 var formatTurnsLeft = "Turns Left: %s" 
 var formatMainGoal = "Goal: %s"
 var formatBonusGoal = "Bonus Goal: %s"
+var vectorScale = Vector2(0, 0)
+var vectorGridSize = Vector2(13,10)
 
+const hex_grid_factory= preload("res://HexGrid.tscn")
+var HexGrid = null
 #TODO create a game loop
 func _ready():
     util.rng.randomize()
-    var vectorScale = Vector2(cellScale, cellScale)
-    var vectorGridSize = Vector2(13,10)
+    vectorScale = Vector2(cellScale, cellScale)
     reset()
         
     ScoreEventHandler.connect("score", self, "update_score")
@@ -40,11 +43,15 @@ func _ready():
     ScoreEventHandler.connect("type_elimination", self, "check_elimination_goal")
     ScoreEventHandler.connect("turns_left", self, "update_turns_left")
         
-    $HexGrid.create_grid(vectorScale, vectorGridSize)
+
   
 
 func _process(_delta):
     check_goals_acheived()
+    if turns_left <= 0:
+        $Menu/Box.show()
+        HexGrid.queue_free()
+        self.set_process(false)
   
 func check_elimination_goal(type:int, amount:int):
     for goal in goalGenerator.defined_goals:
@@ -75,9 +82,10 @@ func check_goals_acheived():
 
 
 func reset():
+    self.set_process(true)
     score = 0
     combo = 0
-    turns_left = 20
+    turns_left = 3
     type_counter = 0
     var cell_type_goal = util.rng.randi_range(2, util.Elements.size()-1)
     set_label_text(scoreLabel, formatScore, score)
@@ -85,6 +93,10 @@ func reset():
     set_label_text(turnsLabel, formatTurnsLeft, turns_left)
     goalGenerator.set_goals(true,1, level)
     goalGenerator.set_goals(false,2, level, cell_type_goal)
+    $Menu/Box.hide()
+    HexGrid = hex_grid_factory.instance()
+    add_child(HexGrid)
+    HexGrid.create_grid(vectorScale, vectorGridSize)
     
     for goal in goalGenerator.defined_goals:
         var goalText = ''    
@@ -111,11 +123,16 @@ func update_score(addScore:int):
     set_label_text(scoreLabel, formatScore, score)
     
 func update_combo(updateCombo:int):
-    if combo <=  updateCombo:
-        combo = updateCombo    
+    if combo <  updateCombo:
+        combo = updateCombo  
+        $ComboAudio.play()  
         set_label_text(comboLabel, formatCombo, combo)
     
 func set_label_text(label: Label,format: String, val):
     label.text = format %  String(val)
     
 
+
+
+func _on_NewGame_pressed():
+    reset()
