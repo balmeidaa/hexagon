@@ -99,18 +99,29 @@ func cell_remover(coordinates: Vector2):
 # We check the selected cell  neighbors, for second selection we check if selected cell is a neighbor
 # else the cell should un select
 func cell_handler(coordinates: Vector2):
-
+    
+    var cell_type = get_cell_type(coordinates)
     match selectionStack.size():
         0:
-            availableNeighbors = get_neighbors(coordinates)
-            selectionStack.push_back(coordinates)
+            if  util.SpecialCells.has(cell_type):
+               handle_cell_effect(coordinates, cell_type)
+            else:
+                availableNeighbors = get_neighbors(coordinates)
+                selectionStack.push_back(coordinates)
+                
         1:
             # Deselected the same cell click twice
-             if coordinates == selectionStack[0]:
-                selectionStack.clear()
-                availableNeighbors.clear()
+            if coordinates == selectionStack[0] :     
+                clear_stack()
+                set_cells_state([coordinates], 'pressed', false)     
+            elif util.SpecialCells.has(cell_type):
+    
                 set_cells_state([coordinates], 'pressed', false)
-             elif availableNeighbors.has(coordinates):
+                set_cells_state(selectionStack, 'pressed', false)
+                clear_stack()
+                handle_cell_effect(coordinates, cell_type)
+                
+            elif availableNeighbors.has(coordinates):
                 selectionStack.push_back(coordinates)
                 swap_cells()
                 set_cells_state(selectionStack, 'pressed', false)
@@ -118,7 +129,11 @@ func cell_handler(coordinates: Vector2):
                 selectionStack.clear()
                 availableNeighbors.clear()
                 ScoreEventHandler.update_turns_left()
-             
+
+func clear_stack():
+    selectionStack.clear()
+    availableNeighbors.clear()
+               
                 
 func check_cells_type(stack: Array):
    
@@ -184,7 +199,6 @@ func get_line_cells(coord:Vector2, axis:String, type:int):
         next = true
     return result
         
-
 func get_neighbors(coord : Vector2) -> Array:
     var hex_neighbor = []
     # We check for valid neighbors
@@ -223,7 +237,7 @@ func swap_cells():
     grid[int(selectionStack[0].x)][int(selectionStack[0].y)] = grid[int(selectionStack[1].x)][int(selectionStack[1].y)]
     grid[int(selectionStack[1].x)][int(selectionStack[1].y)] = temp
     
-    # We swap internal grid coord in the cell // For debug purposes only
+    # We swap internal grid coord in the cell 
     grid[int(selectionStack[0].x)][int(selectionStack[0].y)].set_coord(selectionStack[0])
     grid[int(selectionStack[1].x)][int(selectionStack[1].y)].set_coord(selectionStack[1])
 
@@ -326,7 +340,19 @@ func move_cell_to(origin:Vector2, destination:Vector2):
 func sort_cells(a:Vector2, b:Vector2):
     return a.y > b.y
 
-
+func handle_cell_effect(coordinates:Vector2, cell_type: int):
+    ScoreEventHandler.update_turns_left()
+    match cell_type:
+        util.Elements.BOMB:
+            var neighbors =  get_neighbors(coordinates)
+            var cell = get_cell(coordinates)
+            cell.set_animation_state("explode")
+            eliminationQueue += neighbors
+            missingCells += neighbors
+            missingCells.push_front(coordinates)
+            ScoreEventHandler.update_score(neighbors.size())
+        util.Elements.LINE_REMOVER:
+            pass
         
         
      

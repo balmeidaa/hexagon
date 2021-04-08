@@ -1,6 +1,8 @@
 extends Node
 
-enum Elements {STATIC,STATIC_2,FIRE, ICE, WATER, EARTH}#, WIND, METAL, ENERGY}
+enum Elements {STATIC,STATIC_2, BOMB, LINE_REMOVER, FIRE, ICE, WATER, EARTH, WIND, METAL, ENERGY}
+const SpecialCells = [ Elements.BOMB, Elements.LINE_REMOVER ]
+
 var rng = RandomNumberGenerator.new()
 
     

@@ -42,7 +42,7 @@ func _ready():
     ScoreEventHandler.connect("combo", self, "update_combo")
     ScoreEventHandler.connect("type_elimination", self, "check_elimination_goal")
     ScoreEventHandler.connect("turns_left", self, "update_turns_left")
-        
+   
 
   
 
@@ -85,7 +85,7 @@ func reset():
     self.set_process(true)
     score = 0
     combo = 0
-    turns_left = 3
+    turns_left = 20
     type_counter = 0
     var cell_type_goal = util.rng.randi_range(2, util.Elements.size()-1)
     set_label_text(scoreLabel, formatScore, score)
@@ -97,7 +97,7 @@ func reset():
     HexGrid = hex_grid_factory.instance()
     add_child(HexGrid)
     HexGrid.create_grid(vectorScale, vectorGridSize)
-    
+
     for goal in goalGenerator.defined_goals:
         var goalText = ''    
         match goal["goal"]:

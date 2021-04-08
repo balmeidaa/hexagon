@@ -19,6 +19,8 @@ func _process(_delta):
                 remove()
             "appear":
                 appear()
+            "explode":
+                explode()
             _:
                 pass
 
@@ -56,7 +58,7 @@ func set_animation_state(newState:String, position: Vector2 = Vector2(0,0)):
 
 func _on_Cell_pressed():
     CellEventHandler.cell_pressed(coord)
-    print(type)
+
 
 func move_to():
     TweenAnimator.interpolate_property(self, "position",
@@ -80,18 +82,28 @@ func remove():
     TweenAnimator.interpolate_property(self, "modulate", 
     Color(1, 1, 1, 1), Color(1, 1, 1, 0), 0.5, 
     Tween.TRANS_QUINT, Tween.EASE_IN)
-    TweenAnimator.start()
+    TweenAnimator.start()   
     $RemoveAudio.play()
 
+func explode():
+    TweenAnimator.interpolate_property(self, "scale", 
+    self.scale, (self.scale*1.5), 0.5, 
+    Tween.TRANS_QUINT, Tween.EASE_OUT)
+    
+    TweenAnimator.interpolate_property(self, "modulate", 
+    Color(1, 1, 1, 1), Color(1, 1, 1, 0), 0.3, 
+    Tween.TRANS_QUINT, Tween.EASE_OUT)
+    TweenAnimator.start()   
+    $ExplosionAudio.play()
 
 func init(coordinates: Vector2, Type: int):
     coord = coordinates
     type = Type
     load_texture()
-    
+
 
 func _on_Tween_tween_all_completed():
-    if animation == 'remove':
+    if animation == 'remove' or animation == 'explode':
          TweenAnimator.stop_all()
          CellEventHandler.cell_removed(coord)
          
