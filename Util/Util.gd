@@ -1,7 +1,8 @@
 extends Node
 
-enum Elements {STATIC,STATIC_2, BOMB, LINE_REMOVER, FIRE, ICE, WATER, EARTH, WIND, METAL, ENERGY}
-const SpecialCells = [ Elements.BOMB, Elements.LINE_REMOVER ]
+enum Elements {STATIC,STATIC_2, BOMB, LINE_REMOVER, HEXAGONAL_REMOVER,FIRE, ICE, WATER, EARTH, WIND, METAL, ENERGY}
+const SpecialCells = [ Elements.BOMB, Elements.LINE_REMOVER, Elements.HEXAGONAL_REMOVER ]
+const directionAxis = ["L-R", "UpL-LoR", "LoL-UpR"]
 
 var rng = RandomNumberGenerator.new()
 

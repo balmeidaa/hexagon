@@ -342,19 +342,49 @@ func sort_cells(a:Vector2, b:Vector2):
 
 func handle_cell_effect(coordinates:Vector2, cell_type: int):
     ScoreEventHandler.update_turns_left()
+    var result = []
     match cell_type:
         util.Elements.BOMB:
-            var neighbors =  get_neighbors(coordinates)
+            result =  get_neighbors(coordinates)
             var cell = get_cell(coordinates)
             cell.set_animation_state("explode")
-            eliminationQueue += neighbors
-            missingCells += neighbors
-            missingCells.push_front(coordinates)
-            ScoreEventHandler.update_score(neighbors.size())
+
         util.Elements.LINE_REMOVER:
-            pass
+            #refactor
+            var axis = util.directionAxis[util.rng.randi_range(0, util.directionAxis.size()-1)]
+            result = get_full_line(coordinates, axis)
+            
+        util.Elements.HEXAGONAL_REMOVER:
+
+            for axis in util.directionAxis:
+                result += get_full_line(coordinates, axis)
+            
+   
+    result.push_back(coordinates)
+    eliminationQueue += result
+    missingCells +=  result
+    ScoreEventHandler.update_score(result.size())
         
+func get_full_line(coordinates:Vector2, axis:String):
+        var next = true
+        var result = []
+        var parity = int(coordinates.y) & 1
+        var nextCell = origin 
         
-     
+        var axis_dir_list = axis_direction[parity][axis]
+        
+        for index in range(axis_dir_list.size()):     
+            nextCell = coordinates + axis_dir_list[index]
+            while next:
+                if grid_has_cell(nextCell):
+                    result.append(nextCell)
+                    parity = int(nextCell.y) & 1
+                    var direction =  axis_direction[parity][axis][index]
+                    nextCell = nextCell + direction
+                else:
+                    next = false
+            next = true
+        return result
+        
 
             

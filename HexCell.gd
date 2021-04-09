@@ -87,7 +87,7 @@ func remove():
 
 func explode():
     TweenAnimator.interpolate_property(self, "scale", 
-    self.scale, (self.scale*1.5), 0.5, 
+    self.scale, (self.scale*1.8), 0.3, 
     Tween.TRANS_QUINT, Tween.EASE_OUT)
     
     TweenAnimator.interpolate_property(self, "modulate", 
