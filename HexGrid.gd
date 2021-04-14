@@ -5,6 +5,11 @@ onready var util = preload("Util/Util.gd").new()
 var screenHOffset = 200
 var screenWoffset = 60
 
+
+var probBomb = 10
+var probLineRemover = 5
+var probHexRemover = .5
+
 var offset = Vector2(0,0)
 
 const origin = Vector2(0,0)
@@ -250,7 +255,7 @@ func create_hex(x : int, y : int):
     var position = get_screen_position(x, y)
     cell.position = position
     cell.scale = vectorScale
-    cell.init(Vector2(x, y),  util.random())
+    cell.init(Vector2(x, y),  insert_special_cells())
     cell.set_animation_state("appear")
     
     # remove debug code
@@ -386,5 +391,15 @@ func get_full_line(coordinates:Vector2, axis:String):
             next = true
         return result
         
-
+func insert_special_cells():
+    var prob = util.rng.randf() * 100
+   
+    if prob <= probHexRemover:
+        return util.Elements.HEXAGONAL_REMOVER
+    elif prob <= probLineRemover:
+        return util.Elements.LINE_REMOVER
+    elif prob <= probBomb:
+        return util.Elements.BOMB
+    else:
+        return util.random_cell()
             
