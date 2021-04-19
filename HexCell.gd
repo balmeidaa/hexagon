@@ -3,6 +3,8 @@ onready var TweenAnimator = $Tween
 var type = 0
 var coord = Vector2(0,0)
 
+const formatFileString = "res://Assets/Img/%s.png"
+const formatFileStringPressed = "res://Assets/Img/%s_pressed.png"
 var animationState = []
 var nextPosition = []
 var animation = ""
@@ -33,12 +35,13 @@ func set_type(newType : int):
     load_texture()
 
 func load_texture():
-    var formatFileString = "res://Assets/Img/%s.png"
-
-    if type == util.Elements.STATIC or type == util.Elements.STATIC_2:
-        # TODO when texture available remove the load function outside of the if
-        var file_name = formatFileString % util.Elements.keys()[type].to_lower()
+    
+    if util.nonClickable.has(type):
         $Button.disabled = true
+
+    if util.avaibleCells.has(type):
+        # TODO remove the if when all testures are avaible
+        var file_name = formatFileString % util.Elements.keys()[type].to_lower()
         $Button.set_normal_texture(load(file_name))
         
 
@@ -57,6 +60,7 @@ func set_animation_state(newState:String, position: Vector2 = Vector2(0,0)):
         nextPosition.append(position)
 
 func _on_Cell_pressed():
+    get_hover_pressed_texture()
     CellEventHandler.cell_pressed(coord)
 
 
@@ -108,3 +112,12 @@ func _on_Tween_tween_all_completed():
          CellEventHandler.cell_removed(coord)
          
 
+func _on_Button_mouse_entered():
+    get_hover_pressed_texture()
+
+func get_hover_pressed_texture():
+# TODO remove the if when all testures are avaible
+    if util.avaibleCells.has(type):
+        var file_name = formatFileStringPressed % util.Elements.keys()[type].to_lower()
+        $Button.set_pressed_texture(load(file_name))
+        $Button.set_hover_texture(load(file_name))

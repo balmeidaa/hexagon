@@ -62,5 +62,6 @@ attenuation = 2.73208
 [node name="ExplosionAudio" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 8 )
 volume_db = -10.0
+[connection signal="mouse_entered" from="Button" to="." method="_on_Button_mouse_entered"]
 [connection signal="pressed" from="Button" to="." method="_on_Cell_pressed"]
 [connection signal="tween_all_completed" from="Tween" to="." method="_on_Tween_tween_all_completed"]

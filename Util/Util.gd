@@ -4,6 +4,9 @@ enum Elements {STATIC,STATIC_2, BOMB, LINE_REMOVER, HEXAGONAL_REMOVER,FIRE, ICE,
 const SpecialCells = [ Elements.BOMB, Elements.LINE_REMOVER, Elements.HEXAGONAL_REMOVER ]
 const normalCells = [Elements.FIRE, Elements.ICE, Elements.WATER, Elements.EARTH, Elements.WIND, Elements.METAL, Elements.ENERGY]
 const directionAxis = ["L-R", "UpL-LoR", "LoL-UpR"]
+const nonClickable = [Elements.STATIC,Elements.STATIC_2]
+#temporal just to test tectures
+const avaibleCells = [Elements.ICE, Elements.EARTH, Elements.WIND, Elements.BOMB, Elements.ENERGY,Elements.LINE_REMOVER, Elements.STATIC, Elements.STATIC_2]
 
 var rng = RandomNumberGenerator.new()
 
