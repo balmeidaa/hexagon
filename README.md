@@ -5,9 +5,9 @@ Made with Godot 3.2
 
 Credits:
 
-- Programing: 
-- Art/Design:
-- Audio
+- Programing: BJAA
+- Art/Design: Game_emaG
+- Audio/SFX: Tim Carroll
 
 ### Adding levels
 
@@ -64,4 +64,7 @@ Credits:
 | level_obstacles | the obstacles for the level |
 | type | is the type of cell, 0 is for cells that can't be moved or removed, 1 is for cells that can be removed but not be moved by the player, you can place special cells too, bomb is the 2, line remover 3, nad hexagonal removel 4  |
 | position | array of objects  in which has the position for the type of cells|
+
+Here is an image of the positions of the cells:
+![image info](https://raw.githubusercontent.com/balmeidaa/hexagon/main/board.png)
 
