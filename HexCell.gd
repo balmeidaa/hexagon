@@ -90,6 +90,7 @@ func remove():
     $RemoveAudio.play()
 
 func explode():
+    
     TweenAnimator.interpolate_property(self, "scale", 
     self.scale, (self.scale*1.8), 0.3, 
     Tween.TRANS_QUINT, Tween.EASE_OUT)
@@ -97,7 +98,8 @@ func explode():
     TweenAnimator.interpolate_property(self, "modulate", 
     Color(1, 1, 1, 1), Color(1, 1, 1, 0), 0.3, 
     Tween.TRANS_QUINT, Tween.EASE_OUT)
-    TweenAnimator.start()   
+    TweenAnimator.start()
+    CellEventHandler.cell_exploded()  
     $ExplosionAudio.play()
 
 func init(coordinates: Vector2, Type: int):

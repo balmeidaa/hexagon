@@ -8,9 +8,14 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Camera2D",
+"class": "ShakeCamera2D",
+"language": "GDScript",
+"path": "res://Camera2D.gd"
+} ]
 _global_script_class_icons={
-
+"ShakeCamera2D": ""
 }
 
 [application]

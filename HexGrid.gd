@@ -3,7 +3,7 @@ extends Node2D
 onready var util = preload("Util/Util.gd").new()
 
 var screenHOffset = 200
-var screenWoffset = 60
+var screenWoffset = 75
 
 
 var probBomb = 10
@@ -125,7 +125,10 @@ func cell_handler(coordinates: Vector2):
                 set_cells_state(selectionStack, 'pressed', false)
                 clear_stack()
                 handle_cell_effect(coordinates, cell_type)
-                
+            elif not availableNeighbors.has(coordinates):
+                set_cells_state([coordinates], 'pressed', false)
+                set_cells_state(selectionStack, 'pressed', false)
+                clear_stack()
             elif availableNeighbors.has(coordinates):
                 selectionStack.push_back(coordinates)
                 swap_cells()
@@ -134,6 +137,7 @@ func cell_handler(coordinates: Vector2):
                 selectionStack.clear()
                 availableNeighbors.clear()
                 ScoreEventHandler.update_turns_left()
+            
 
 func clear_stack():
     selectionStack.clear()

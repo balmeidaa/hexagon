@@ -1,5 +1,7 @@
 extends Node2D
 
+onready var TweenAnim = $Tween
+onready var Message = $Menu/Box/Message
 var cellScale = .5
 var util = preload("Util/Util.gd").new()
 var levelLoader = preload("LoadLevels.gd").new()
@@ -39,18 +41,26 @@ var currentLevel = 0
 
 #TODO create a game loop
 func _ready():
+    CellEventHandler.connect("cell_exploded", self, "camera_shake")
+    
+    $Menu/Box.hide()
     util.rng.randomize()
     vectorScale = Vector2(cellScale, cellScale)
     reset()    
     levelData = levelLoader.load_file()
     load_level()
+
     ScoreEventHandler.connect("score", self, "update_score")
     ScoreEventHandler.connect("combo", self, "update_combo")
     ScoreEventHandler.connect("type_elimination", self, "check_elimination_goal")
     ScoreEventHandler.connect("turns_left", self, "update_turns_left")
-   
+ 
 func load_level():
-    if currentLevel >= levelData.size():
+    defined_goals.clear()
+    
+    if currentLevel > levelData.size()-1:
+        Message.text = "You Win!"
+        stop_game()
         return
     HexGrid.probBomb = levelData[currentLevel].probBomb
     HexGrid.probLineRemover = levelData[currentLevel].probLineRemover
@@ -63,7 +73,7 @@ func load_level():
     defined_goals.push_back(levelData[currentLevel].bonus_goal)
     
     for goal in defined_goals:
-
+   
         var goalText = ''    
         if  goal.goal ==  combo_goal:
                 goalText = "Get a %dx Combo" %  goal.objective  
@@ -71,7 +81,7 @@ func load_level():
                 goalText = "Make %d points" %  goal.objective 
         elif goal.goal ==  elimination_goal:
                 var type_cell = util.Elements.keys()[goal.cell_type].to_lower()
-                goalText = "Eliminate %d %s cells" %  [goal.objective, type_cell]
+                goalText = "Eliminate %d cells" %  [goal.objective]
 
         if goal.main_goal:
              set_label_text(mainGoalLabel, formatMainGoal, goalText)
@@ -81,20 +91,28 @@ func load_level():
         for obstacle in levelData[currentLevel].level_obstacles:
             for position in obstacle.position:
                 HexGrid.grid[position.x][position.y].set_type(obstacle.type)
-        
+func stop_game():
+        $Menu/Box.show()
+        $Menu/Box/NewGame.show()
+        HexGrid.queue_free()
+        self.set_process(false)
 
 func _process(_delta):
     check_goals_acheived()
     if turns_left <= 0:
-        $Menu/Box.show()
-        HexGrid.queue_free()
-        self.set_process(false)
+        Message.text = "Game Over"
+        stop_game()
     elif nextLevel == true:
-        HexGrid.queue_free()
-        self.set_process(false)
         currentLevel += 1
-        reset()
-        load_level()
+        Message.text = "Level Complete!"
+        $Menu/Box.show()
+        Message.show()
+     
+        $Menu/Box/NewGame.hide()
+        self.set_process(false)
+       
+        $Timer.start()
+             
   
 func check_elimination_goal(type:int, amount:int):
     for goal in defined_goals:
@@ -122,19 +140,17 @@ func check_goals_acheived():
         elif goalComplete:
             update_score(score * .5)
             set_label_text(bonusGoalLabel, formatBonusGoal, objectiveCompleteText)
-        
-
+    
 
 func reset():
+    $Menu/Box.hide()
     self.set_process(true)
     nextLevel = false
     score = 0
     combo = 0
     type_counter = 0
-    var cell_type_goal = util.rng.randi_range(2, util.Elements.size()-1)
     set_label_text(scoreLabel, formatScore, score)
     set_label_text(comboLabel, formatCombo, combo)
-    $Menu/Box.hide()
     HexGrid = hex_grid_factory.instance()
     add_child(HexGrid)
     HexGrid.create_grid(vectorScale, vectorGridSize)
@@ -159,8 +175,23 @@ func set_label_text(label: Label,format: String, val):
     label.text = format %  String(val)
     
 
-
-
 func _on_NewGame_pressed():
     currentLevel = 0
+    nextLevel = false
+    print(currentLevel)
     reset()
+    load_level()
+
+func _on_Timer_timeout():
+     HexGrid.hide()
+     HexGrid.queue_free()
+     TweenAnim.interpolate_property(Message, "modulate", 
+        Color(1, 1, 1, 1), Color(1, 1, 1, 0), 1.5, 
+        Tween.TRANS_LINEAR)
+     TweenAnim.start()
+     reset()
+     load_level()
+     
+func camera_shake():
+    $ShakeCamera.add_trauma(.25)
+    $ShakeCamera.add_trauma(.3)
