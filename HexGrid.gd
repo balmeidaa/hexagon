@@ -262,11 +262,6 @@ func create_hex(x : int, y : int):
     cell.init(Vector2(x, y),  insert_special_cells())
     cell.set_animation_state("appear")
     
-    # remove debug code
-    var format_string = "%d" #-(%d,%d)"
-    var string = format_string % [cell.type]#,x,y]
-    cell.set_text(string)
-    ##
     add_child(cell)
     return cell
 

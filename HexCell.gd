@@ -26,9 +26,6 @@ func _process(_delta):
             _:
                 pass
 
-#Debug function remove later
-func set_text(text):
-    $Label.text = text
 
 func set_type(newType : int):
     type = newType
@@ -39,10 +36,8 @@ func load_texture():
     if util.nonClickable.has(type):
         $Button.disabled = true
 
-    if util.avaibleCells.has(type):
-        # TODO remove the if when all testures are avaible
-        var file_name = formatFileString % util.Elements.keys()[type].to_lower()
-        $Button.set_normal_texture(load(file_name))
+    var file_name = formatFileString % util.Elements.keys()[type].to_lower()
+    $Button.set_normal_texture(load(file_name))
         
 
 func get_size():
@@ -118,8 +113,6 @@ func _on_Button_mouse_entered():
     get_hover_pressed_texture()
 
 func get_hover_pressed_texture():
-# TODO remove the if when all testures are avaible
-    if util.avaibleCells.has(type):
-        var file_name = formatFileStringPressed % util.Elements.keys()[type].to_lower()
-        $Button.set_pressed_texture(load(file_name))
-        $Button.set_hover_texture(load(file_name))
+    var file_name = formatFileStringPressed % util.Elements.keys()[type].to_lower()
+    $Button.set_pressed_texture(load(file_name))
+    $Button.set_hover_texture(load(file_name))

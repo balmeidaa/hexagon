@@ -1,18 +1,12 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://HexCell.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Img/hex.png" type="Texture" id=2]
-[ext_resource path="res://Assets/Fonts/ubuntu.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://Assets/Img/pressed.png" type="Texture" id=4]
 [ext_resource path="res://Assets/sfx/woosh.wav" type="AudioStream" id=5]
 [ext_resource path="res://Assets/sfx/pop.wav" type="AudioStream" id=6]
 [ext_resource path="res://Assets/Img/map.png" type="BitMap" id=7]
 [ext_resource path="res://Assets/sfx/explosion.wav" type="AudioStream" id=8]
-
-[sub_resource type="DynamicFont" id=1]
-size = 40
-use_filter = true
-font_data = ExtResource( 3 )
 
 [node name="HexCell" type="Node2D"]
 z_index = -1
@@ -32,21 +26,6 @@ texture_hover = ExtResource( 4 )
 texture_click_mask = ExtResource( 7 )
 expand = true
 stretch_mode = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="RichTextLabel" parent="."]
-margin_left = -24.0
-margin_top = -16.0
-margin_right = 16.0
-margin_bottom = 24.0
-custom_fonts/normal_font = SubResource( 1 )
-custom_colors/default_color = Color( 0.0392157, 0.0352941, 0.0352941, 1 )
-meta_underlined = false
-tab_size = 2
-text = "01"
-scroll_active = false
 __meta__ = {
 "_edit_use_anchors_": false
 }

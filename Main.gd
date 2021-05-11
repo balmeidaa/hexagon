@@ -25,7 +25,7 @@ const points_goal = 1
 const elimination_goal = 2
 
 var nextLevel = false
-
+const hex_factory = preload("res://HexCell.tscn")
 var formatScore = "Score: %s" 
 var formatCombo = "Best Combo: %sx" 
 var formatTurnsLeft = "Turns Left: %s" 
@@ -38,9 +38,10 @@ const hex_grid_factory= preload("res://HexGrid.tscn")
 var HexGrid = null
 var levelData = {}
 var currentLevel = 0
-
+var cell = null
 #TODO create a game loop
 func _ready():
+    
     CellEventHandler.connect("cell_exploded", self, "camera_shake")
     
     $Menu/Box.hide()
@@ -56,6 +57,9 @@ func _ready():
     ScoreEventHandler.connect("turns_left", self, "update_turns_left")
  
 func load_level():
+    if is_instance_valid(cell):
+        cell.queue_free()
+    
     defined_goals.clear()
     
     if currentLevel > levelData.size()-1:
@@ -71,7 +75,7 @@ func load_level():
     
     defined_goals.push_back(levelData[currentLevel].main_goal)
     defined_goals.push_back(levelData[currentLevel].bonus_goal)
-    
+
     for goal in defined_goals:
    
         var goalText = ''    
@@ -80,8 +84,17 @@ func load_level():
         elif  goal.goal ==  points_goal:
                 goalText = "Make %d points" %  goal.objective 
         elif goal.goal ==  elimination_goal:
-                var type_cell = util.Elements.keys()[goal.cell_type].to_lower()
-                goalText = "Eliminate %d cells" %  [goal.objective]
+                goalText = "        Eliminate %d " %  [(goal.objective - type_counter)]
+                cell = hex_factory.instance()
+                var offset = bonusGoalLabel.rect_position
+                var position = bonusGoalLabel.get_size()
+                position.y += offset.y * 2.1
+                position.x = 180
+                cell.position = position
+                cell.scale = Vector2(0.3, 0.3)
+                cell.set_type(goal.cell_type)
+                cell.set_button_state('disabled', true)
+                add_child(cell)
 
         if goal.main_goal:
              set_label_text(mainGoalLabel, formatMainGoal, goalText)
@@ -96,7 +109,9 @@ func stop_game():
         $Menu/Box/NewGame.show()
         HexGrid.queue_free()
         self.set_process(false)
-
+        
+       
+        
 func _process(_delta):
     check_goals_acheived()
     if turns_left <= 0:
@@ -122,7 +137,7 @@ func check_elimination_goal(type:int, amount:int):
 # todo condition for next level
 func check_goals_acheived():
     var objectiveCompleteText = "Complete!"
-
+    var goalText = ''
     for goal in defined_goals:
         var goalComplete = false
         if  combo_goal ==  goal.goal:
@@ -132,6 +147,11 @@ func check_goals_acheived():
             if score >= goal.objective: 
                 goalComplete = true
         elif  elimination_goal ==   goal.goal:
+                goalText = "        Eliminate %d " %  [(goal.objective - type_counter)]
+                if goal.main_goal:
+                    set_label_text(mainGoalLabel, formatMainGoal, goalText)
+                else:
+                    set_label_text(bonusGoalLabel, formatBonusGoal, goalText)
                 if type_counter >= goal.objective: 
                     goalComplete = true
         if goal.main_goal and goalComplete:
@@ -178,7 +198,6 @@ func set_label_text(label: Label,format: String, val):
 func _on_NewGame_pressed():
     currentLevel = 0
     nextLevel = false
-    print(currentLevel)
     reset()
     load_level()
 
@@ -186,7 +205,7 @@ func _on_Timer_timeout():
      HexGrid.hide()
      HexGrid.queue_free()
      TweenAnim.interpolate_property(Message, "modulate", 
-        Color(1, 1, 1, 1), Color(1, 1, 1, 0), 1.5, 
+        Color(1, 1, 1, 1), Color(1, 1, 1, 0), 1.8, 
         Tween.TRANS_LINEAR)
      TweenAnim.start()
      reset()

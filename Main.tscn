@@ -1,40 +1,41 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://ShakeCamera.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Main.gd" type="Script" id=2]
 [ext_resource path="res://DebugStats.gd" type="Script" id=3]
 [ext_resource path="res://Assets/sfx/ding.wav" type="AudioStream" id=4]
 [ext_resource path="res://Assets/Fonts/snap_2_grid.ttf" type="DynamicFontData" id=5]
+[ext_resource path="res://Assets/Fonts/MBBlockType.ttf" type="DynamicFontData" id=6]
 
 [sub_resource type="DynamicFont" id=1]
-size = 50
+size = 35
 outline_size = 2
 outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
-font_data = ExtResource( 5 )
+font_data = ExtResource( 6 )
 
 [sub_resource type="DynamicFont" id=2]
-size = 50
+size = 40
 outline_size = 2
 outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
-font_data = ExtResource( 5 )
+font_data = ExtResource( 6 )
 
 [sub_resource type="DynamicFont" id=3]
-size = 50
+size = 35
 outline_size = 2
 outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
-font_data = ExtResource( 5 )
+font_data = ExtResource( 6 )
 
 [sub_resource type="DynamicFont" id=4]
-size = 40
+size = 30
 outline_size = 2
 outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
-font_data = ExtResource( 5 )
+font_data = ExtResource( 6 )
 
 [sub_resource type="DynamicFont" id=5]
-size = 40
+size = 25
 outline_size = 2
 outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
-font_data = ExtResource( 5 )
+font_data = ExtResource( 6 )
 
 [sub_resource type="DynamicFont" id=6]
 size = 120
@@ -43,10 +44,10 @@ outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
 font_data = ExtResource( 5 )
 
 [sub_resource type="DynamicFont" id=7]
-size = 60
+size = 40
 outline_size = 1
 outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
-font_data = ExtResource( 5 )
+font_data = ExtResource( 6 )
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 2 )
@@ -67,7 +68,7 @@ __meta__ = {
 
 [node name="Container" type="VBoxContainer" parent="GUI"]
 margin_right = 1024.0
-margin_bottom = 150.0
+margin_bottom = 654.0
 
 [node name="Scoreboard" type="HBoxContainer" parent="GUI/Container"]
 margin_right = 1024.0
@@ -77,10 +78,10 @@ custom_constants/separation = 100
 alignment = 1
 
 [node name="Score" type="Label" parent="GUI/Container/Scoreboard"]
-margin_left = 118.0
-margin_top = 15.0
-margin_right = 295.0
-margin_bottom = 50.0
+margin_left = 90.0
+margin_top = 13.0
+margin_right = 275.0
+margin_bottom = 52.0
 custom_fonts/font = SubResource( 1 )
 text = "Score: 000"
 __meta__ = {
@@ -88,10 +89,10 @@ __meta__ = {
 }
 
 [node name="TurnsLeft" type="Label" parent="GUI/Container/Scoreboard"]
-margin_left = 395.0
-margin_top = 15.0
-margin_right = 636.0
-margin_bottom = 50.0
+margin_left = 375.0
+margin_top = 10.0
+margin_right = 646.0
+margin_bottom = 55.0
 custom_fonts/font = SubResource( 2 )
 text = "Turns Left: 10"
 __meta__ = {
@@ -99,10 +100,10 @@ __meta__ = {
 }
 
 [node name="Combo" type="Label" parent="GUI/Container/Scoreboard"]
-margin_left = 736.0
-margin_top = 15.0
-margin_right = 906.0
-margin_bottom = 50.0
+margin_left = 746.0
+margin_top = 13.0
+margin_right = 933.0
+margin_bottom = 52.0
 custom_fonts/font = SubResource( 3 )
 text = "Combo: 0X"
 align = 2
@@ -113,21 +114,24 @@ __meta__ = {
 [node name="Goals" type="VBoxContainer" parent="GUI/Container"]
 margin_top = 69.0
 margin_right = 1024.0
-margin_bottom = 135.0
+margin_bottom = 142.0
 custom_constants/separation = 10
 alignment = 1
 
 [node name="MainGoal" type="Label" parent="GUI/Container/Goals"]
 margin_right = 1024.0
-margin_bottom = 28.0
+margin_bottom = 34.0
 custom_fonts/font = SubResource( 4 )
 text = "Main goal: 0 points"
 valign = 2
 
 [node name="BonusGoal" type="Label" parent="GUI/Container/Goals"]
-margin_top = 38.0
-margin_right = 1024.0
-margin_bottom = 66.0
+margin_top = 44.0
+margin_right = 205.0
+margin_bottom = 73.0
+rect_min_size = Vector2( 205, 29 )
+size_flags_horizontal = 2
+size_flags_vertical = 0
 custom_fonts/font = SubResource( 5 )
 text = "bonus: 0x combo"
 
@@ -147,7 +151,7 @@ margin_bottom = 40.0
 stream = ExtResource( 4 )
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 1.8
+wait_time = 1.9
 one_shot = true
 
 [node name="Tween" type="Tween" parent="."]
@@ -168,7 +172,7 @@ __meta__ = {
 
 [node name="Box" type="VBoxContainer" parent="Menu"]
 margin_right = 577.0
-margin_bottom = 131.0
+margin_bottom = 157.0
 custom_constants/separation = 0
 
 [node name="Message" type="Label" parent="Menu/Box"]
@@ -180,10 +184,10 @@ align = 1
 [node name="NewGame" type="Button" parent="Menu/Box"]
 margin_top = 83.0
 margin_right = 577.0
-margin_bottom = 131.0
+margin_bottom = 134.0
 custom_fonts/font = SubResource( 7 )
 custom_colors/font_color_disabled = Color( 0.0588235, 0, 0, 1 )
 custom_colors/font_color = Color( 0.960784, 0.937255, 0.937255, 1 )
-text = "New Game"
+text = "New    Game"
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
 [connection signal="pressed" from="Menu/Box/NewGame" to="." method="_on_NewGame_pressed"]

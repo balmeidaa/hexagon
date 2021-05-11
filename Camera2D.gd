@@ -18,7 +18,6 @@ func _ready():
     noise.seed = randi()
     noise.period = 4
     noise.octaves = 2
-    print(offset)
 
 func _process(delta):
     if trauma:
