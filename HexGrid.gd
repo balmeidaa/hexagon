@@ -6,10 +6,10 @@ var screenHOffset = 200
 var screenWoffset = 75
 
 
-var probBomb = 10
-var probLineRemover = 5
-var probHexRemover = .5
-
+var probBomb = 0
+var probLineRemover = 0
+var probHexRemover = 0
+var difficultMode = false
 var offset = Vector2(0,0)
 
 const origin = Vector2(0,0)
@@ -49,7 +49,7 @@ var nextToDrop = []
 var newCells = []
 var droppedCells = []
 var gridArea = Rect2(origin, origin)
-
+var combo = 0
 var ready_for_drop = false
 const hex_factory = preload("res://HexCell.tscn")
 
@@ -81,7 +81,7 @@ func _process(_delta):
         drop_new() 
      # check for dropped cells for 3 of more in lines
     if droppedCells.size() > 0 and not check_non_null_cells(droppedCells):
-        check_cells_type(droppedCells)
+        combo += check_cells_type(droppedCells)
         droppedCells.clear()
      
     self.set_process(true)
@@ -104,7 +104,7 @@ func cell_remover(coordinates: Vector2):
 # We check the selected cell  neighbors, for second selection we check if selected cell is a neighbor
 # else the cell should un select
 func cell_handler(coordinates: Vector2):
-    
+    combo = 0
     var cell_type = get_cell_type(coordinates)
     match selectionStack.size():
         0:
@@ -120,7 +120,6 @@ func cell_handler(coordinates: Vector2):
                 clear_stack()
                 set_cells_state([coordinates], 'pressed', false)     
             elif util.SpecialCells.has(cell_type):
-    
                 set_cells_state([coordinates], 'pressed', false)
                 set_cells_state(selectionStack, 'pressed', false)
                 clear_stack()
@@ -133,7 +132,7 @@ func cell_handler(coordinates: Vector2):
                 selectionStack.push_back(coordinates)
                 swap_cells()
                 set_cells_state(selectionStack, 'pressed', false)
-                check_cells_type(selectionStack)
+                combo += check_cells_type(selectionStack)
                 selectionStack.clear()
                 availableNeighbors.clear()
                 ScoreEventHandler.update_turns_left()
@@ -144,7 +143,7 @@ func clear_stack():
     availableNeighbors.clear()
                
                 
-func check_cells_type(stack: Array):
+func check_cells_type(stack: Array) -> int:
    
     var scoreCells = 0
     var comboCounter = 0
@@ -160,7 +159,7 @@ func check_cells_type(stack: Array):
         ScoreEventHandler.update_score(scoreCells)
         if cellsRemoved.size() > 0:
             comboCounter += 1
-            ScoreEventHandler.update_combo(comboCounter)
+            ScoreEventHandler.update_combo(combo)
             ScoreEventHandler.update_type_elimination(cell_type, cellsRemoved.size())
         eliminationQueue += cellsRemoved
         
@@ -170,7 +169,8 @@ func check_cells_type(stack: Array):
         scoreCells = scoreCells * comboCounter
     
     ScoreEventHandler.update_score(scoreCells)
-    ScoreEventHandler.update_combo(comboCounter)
+    ScoreEventHandler.update_combo(combo)
+    return comboCounter
 
 func get_neighbors_w_direction(coord : Vector2, type :int)-> Array:
     var cells = []
@@ -259,7 +259,7 @@ func create_hex(x : int, y : int):
     var position = get_screen_position(x, y)
     cell.position = position
     cell.scale = vectorScale
-    cell.init(Vector2(x, y),  insert_special_cells())
+    cell.init(Vector2(x, y),  insert_cells())
     cell.set_animation_state("appear")
     
     add_child(cell)
@@ -390,9 +390,8 @@ func get_full_line(coordinates:Vector2, axis:String):
             next = true
         return result
         
-func insert_special_cells():
+func insert_cells():
     var prob = util.rng.randf() * 100
-   
     if prob <= probHexRemover:
         return util.Elements.HEXAGONAL_REMOVER
     elif prob <= probLineRemover:
@@ -400,5 +399,5 @@ func insert_special_cells():
     elif prob <= probBomb:
         return util.Elements.BOMB
     else:
-        return util.random_cell()
+        return util.random_cell(difficultMode)
             

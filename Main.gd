@@ -41,7 +41,7 @@ var currentLevel = 0
 var cell = null
 #TODO create a game loop
 func _ready():
-    
+
     CellEventHandler.connect("cell_exploded", self, "camera_shake")
     
     $Menu/Box.hide()
@@ -50,29 +50,25 @@ func _ready():
     reset()    
     levelData = levelLoader.load_file()
     load_level()
-
+#    $Debugger.add_property($HexGrid, "missingCells", "")
+#    $Debugger.add_property($HexGrid, "newCells", "")
     ScoreEventHandler.connect("score", self, "update_score")
     ScoreEventHandler.connect("combo", self, "update_combo")
     ScoreEventHandler.connect("type_elimination", self, "check_elimination_goal")
     ScoreEventHandler.connect("turns_left", self, "update_turns_left")
  
 func load_level():
-    if is_instance_valid(cell):
-        cell.queue_free()
-    
     defined_goals.clear()
     
     if currentLevel > levelData.size()-1:
         Message.text = "You Win!"
         stop_game()
         return
-    HexGrid.probBomb = levelData[currentLevel].probBomb
-    HexGrid.probLineRemover = levelData[currentLevel].probLineRemover
-    HexGrid.probHexRemover = levelData[currentLevel].probHexRemover
-    
+
     turns_left = levelData[currentLevel].turns
     set_label_text(turnsLabel, formatTurnsLeft, turns_left)
-    
+    set_prob_items()
+    HexGrid.create_grid(vectorScale, vectorGridSize)
     defined_goals.push_back(levelData[currentLevel].main_goal)
     defined_goals.push_back(levelData[currentLevel].bonus_goal)
 
@@ -84,7 +80,7 @@ func load_level():
         elif  goal.goal ==  points_goal:
                 goalText = "Make %d points" %  goal.objective 
         elif goal.goal ==  elimination_goal:
-                goalText = "        Eliminate %d " %  [(goal.objective - type_counter)]
+                goalText = "        Eliminate %d cells" %  [(goal.objective - type_counter)]
                 cell = hex_factory.instance()
                 var offset = bonusGoalLabel.rect_position
                 var position = bonusGoalLabel.get_size()
@@ -120,6 +116,7 @@ func _process(_delta):
     elif nextLevel == true:
         currentLevel += 1
         Message.text = "Level Complete!"
+        removeCellUI()
         $Menu/Box.show()
         Message.show()
      
@@ -147,18 +144,18 @@ func check_goals_acheived():
             if score >= goal.objective: 
                 goalComplete = true
         elif  elimination_goal ==   goal.goal:
-                goalText = "        Eliminate %d " %  [(goal.objective - type_counter)]
+                goalText = "        Eliminate %d cells" %  [(goal.objective - type_counter)]
                 if goal.main_goal:
                     set_label_text(mainGoalLabel, formatMainGoal, goalText)
                 else:
                     set_label_text(bonusGoalLabel, formatBonusGoal, goalText)
                 if type_counter >= goal.objective: 
+                    removeCellUI()
                     goalComplete = true
         if goal.main_goal and goalComplete:
             nextLevel = true
             set_label_text(mainGoalLabel, formatMainGoal, objectiveCompleteText)
         elif goalComplete:
-            update_score(score * .5)
             set_label_text(bonusGoalLabel, formatBonusGoal, objectiveCompleteText)
     
 
@@ -173,7 +170,7 @@ func reset():
     set_label_text(comboLabel, formatCombo, combo)
     HexGrid = hex_grid_factory.instance()
     add_child(HexGrid)
-    HexGrid.create_grid(vectorScale, vectorGridSize)
+    
 
 
                 
@@ -202,8 +199,9 @@ func _on_NewGame_pressed():
     load_level()
 
 func _on_Timer_timeout():
-     HexGrid.hide()
-     HexGrid.queue_free()
+     if is_instance_valid(HexGrid):
+        HexGrid.hide()
+        HexGrid.queue_free()
      TweenAnim.interpolate_property(Message, "modulate", 
         Color(1, 1, 1, 1), Color(1, 1, 1, 0), 1.8, 
         Tween.TRANS_LINEAR)
@@ -214,3 +212,14 @@ func _on_Timer_timeout():
 func camera_shake():
     $ShakeCamera.add_trauma(.25)
     $ShakeCamera.add_trauma(.3)
+
+func set_prob_items():
+    HexGrid.probBomb = levelData[currentLevel].probBomb
+    HexGrid.probLineRemover = levelData[currentLevel].probLineRemover
+    HexGrid.probHexRemover = levelData[currentLevel].probHexRemover
+    HexGrid.difficultMode = levelData[currentLevel].difficultMode
+
+
+func removeCellUI():
+    if is_instance_valid(cell):
+            cell.queue_free()

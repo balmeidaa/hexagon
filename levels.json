@@ -1,1 +1,82 @@
-[{"probBomb":10,"probLineRemover":5,"probHexRemover":0.5,"turns":20,"main_goal":{"main_goal":true,"goal":1,"objective":2,"cell_type":0},"bonus_goal":{"main_goal":false,"goal":2,"objective":6,"cell_type":7},"level_obstacles":[{"type":0,"position":[]},{"type":1,"position":[]}]},{"probBomb":10,"probLineRemover":5,"probHexRemover":0.5,"turns":20,"main_goal":{"main_goal":true,"goal":1,"objective":5,"cell_type":0},"bonus_goal":{"main_goal":false,"goal":0,"objective":4,"cell_type":0},"level_obstacles":[{"type":0,"position":[{"x":5,"y":3},{"x":6,"y":3},{"x":5,"y":4},{"x":6,"y":4},{"x":7,"y":4},{"x":5,"y":5},{"x":6,"y":5}]},{"type":1,"position":[]}]}]
+[
+  {
+    "difficultMode": false,
+    "probBomb": 0.1,
+    "probLineRemover": 0,
+    "probHexRemover": 0,
+    "turns": 20,
+    "main_goal": {
+      "main_goal": true,
+      "goal": 1,
+      "objective": 100,
+      "cell_type": 0
+    },
+    "bonus_goal": {
+      "main_goal": false,
+      "goal": 2,
+      "objective": 6,
+      "cell_type": 7
+    },
+    "level_obstacles": [
+      {
+        "type": 3,
+        "position": []
+      },
+      {
+        "type": 4,
+        "position": []
+      }
+    ]
+  },
+  {
+    "difficultMode": false,
+    "probBomb": 1,
+    "probLineRemover": 0.1,
+    "probHexRemover": 0,
+    "turns": 20,
+    "main_goal": {
+      "main_goal": true,
+      "goal": 1,
+      "objective": 150,
+      "cell_type": 0
+    },
+    "bonus_goal": {
+      "main_goal": false,
+      "goal": 0,
+      "objective": 4,
+      "cell_type": 0
+    },
+    "level_obstacles": [
+      {
+        "type": 3,
+        "position": [
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 6,
+            "y": 3
+          },
+ 
+          {
+            "x": 6,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 5
+          }
+        ]
+      },
+      {
+        "type": 4,
+        "position": []
+      }
+    ]
+  }
+]
