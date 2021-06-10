@@ -13,6 +13,7 @@ Credits:
 - Hex runes has a levels.json file in which has the level for each level in json format, each json object is a level, this is the basic structure:
 ```json
   {
+   "difficultMode": false,
     "probBomb": 10,
     "probLineRemover": 5,
     "probHexRemover": 0.5,
@@ -53,6 +54,7 @@ Credits:
 
 | Property | What they do |
 | ------ | ------ |
+| difficultMode | Will randomly static cells when creating new cells |
 | probBomb | probability of spawning a bomb cell |
 | probLineRemover | probability of spawning a line remover cell |
 | probHexRemover | probability of spawning a hexagonal remover cell |
