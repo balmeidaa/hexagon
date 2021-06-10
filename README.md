@@ -7,7 +7,6 @@ Credits:
 
 - Programing: BJAA
 - Art/Design: Game_emaG
-- Audio/SFX: Tim Carroll
 
 ### Adding levels
 
