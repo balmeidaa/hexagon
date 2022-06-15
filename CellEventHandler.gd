@@ -3,6 +3,9 @@ signal cell_pressed
 signal cell_removed
 signal cell_exploded
 
+var level_editor = false
+
+
 func _ready():
     pass # Replace with function body.
 

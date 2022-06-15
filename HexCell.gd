@@ -8,7 +8,12 @@ const formatFileStringPressed = "res://Assets/Img/%s_pressed.png"
 var animationState = []
 var nextPosition = []
 var animation = ""
+onready var label_button = $Button/Label  
 var util = preload("Util/Util.gd").new()
+    
+func _ready():
+    if CellEventHandler.level_editor:
+        label_button.show()
     
 func _process(_delta):
         
@@ -55,8 +60,11 @@ func set_animation_state(newState:String, position: Vector2 = Vector2(0,0)):
         nextPosition.append(position)
 
 func _on_Cell_pressed():
-    get_hover_pressed_texture()
-    CellEventHandler.cell_pressed(coord)
+    if not CellEventHandler.level_editor:
+        get_hover_pressed_texture()
+        CellEventHandler.cell_pressed(coord)
+    else:
+        pass
 
 
 func move_to():
@@ -99,8 +107,11 @@ func explode():
 
 func init(coordinates: Vector2, Type: int):
     coord = coordinates
-    type = Type
-    load_texture()
+    if not CellEventHandler.level_editor:
+        type = Type
+        load_texture()
+    else:
+        $Button/Label.text = String(coordinates)
 
 
 func _on_Tween_tween_all_completed():
@@ -110,7 +121,8 @@ func _on_Tween_tween_all_completed():
          
 
 func _on_Button_mouse_entered():
-    get_hover_pressed_texture()
+    if not CellEventHandler.level_editor:
+        get_hover_pressed_texture()
 
 func get_hover_pressed_texture():
     var file_name = formatFileStringPressed % util.Elements.keys()[type].to_lower()

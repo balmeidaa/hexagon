@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://EditorButton.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Img/map.png" type="BitMap" id=2]
+[ext_resource path="res://Assets/Img/hex.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Img/pressed.png" type="Texture" id=4]
+
+[sub_resource type="Shader" id=1]
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+
+[node name="Button" type="TextureButton"]
+material = SubResource( 2 )
+margin_left = -6.0
+margin_top = -6.0
+margin_right = 94.0
+margin_bottom = 94.0
+grow_horizontal = 2
+grow_vertical = 2
+rect_min_size = Vector2( 70, 70 )
+rect_scale = Vector2( 0.5, 0.5 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+toggle_mode = true
+shortcut_in_tooltip = false
+action_mode = 0
+texture_normal = ExtResource( 3 )
+texture_pressed = ExtResource( 4 )
+texture_hover = ExtResource( 4 )
+texture_click_mask = ExtResource( 2 )
+expand = true
+stretch_mode = 4
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="mouse_entered" from="." to="." method="_on_Button_mouse_entered"]
+[connection signal="pressed" from="." to="." method="_on_Button_pressed"]

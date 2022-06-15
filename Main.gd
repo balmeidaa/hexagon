@@ -189,6 +189,9 @@ func update_combo(updateCombo:int):
         set_label_text(comboLabel, formatCombo, combo)
     
 func set_label_text(label: Label,format: String, val):
+#    var newLabelText = format %  String(val)
+#    $Tween.interpolate_method(label,"set_text",0, 500, 2.0, Tween.TRANS_QUART, Tween.EASE_IN_OUT)
+#    $Tween.start()
     label.text = format %  String(val)
     
 

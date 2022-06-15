@@ -21,7 +21,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Hex-Grid"
-run/main_scene="res://Main.tscn"
+run/main_scene="res://LevelEditor.tscn"
 config/icon="res://icon.png"
 
 [autoload]

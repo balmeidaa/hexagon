@@ -4,7 +4,7 @@ enum Elements {BOMB, LINE_REMOVER, HEXAGONAL_REMOVER, STATIC,STATIC_2,FIRE, ICE,
 const SpecialCells = [ Elements.BOMB, Elements.LINE_REMOVER, Elements.HEXAGONAL_REMOVER ]
 const normalCells = [Elements.FIRE, Elements.ICE, Elements.WATER, Elements.EARTH, Elements.WIND, Elements.METAL, Elements.ENERGY]
 const directionAxis = ["L-R", "UpL-LoR", "LoL-UpR"]
-const nonClickable = [Elements.STATIC,Elements.STATIC_2]
+const nonClickable = [Elements.STATIC, Elements.STATIC_2]
 
 var rng = RandomNumberGenerator.new()
 
