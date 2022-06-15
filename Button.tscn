@@ -12,10 +12,10 @@ shader = SubResource( 1 )
 
 [node name="Button" type="TextureButton"]
 material = SubResource( 2 )
-margin_left = -6.0
-margin_top = -6.0
-margin_right = 94.0
-margin_bottom = 94.0
+margin_left = -23.0
+margin_top = -24.0
+margin_right = 77.0
+margin_bottom = 76.0
 grow_horizontal = 2
 grow_vertical = 2
 rect_min_size = Vector2( 70, 70 )

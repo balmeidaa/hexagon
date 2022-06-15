@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://LevelEditor.gd" type="Script" id=1]
-[ext_resource path="res://Button.tscn" type="PackedScene" id=2]
+[ext_resource path="res://bonus_goal.tres" type="ButtonGroup" id=2]
 [ext_resource path="res://ubuntu.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://main_goal.tres" type="ButtonGroup" id=4]
 
@@ -40,13 +40,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button" parent="Grid" instance=ExtResource( 2 )]
-margin_left = 473.0
-margin_top = 7.0
-margin_right = 543.0
-margin_bottom = 77.0
-rect_scale = Vector2( 1, 1 )
-
 [node name="TabContainer" type="TabContainer" parent="."]
 margin_left = 1.0
 margin_top = 56.0
@@ -63,7 +56,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
 margin_top = 32.0
-margin_right = 36.0
+margin_right = -4.0
 margin_bottom = -4.0
 
 [node name="LevelFeatures" type="HBoxContainer" parent="TabContainer/items"]
@@ -82,10 +75,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="CheckBox" type="CheckBox" parent="TabContainer/items/LevelFeatures"]
+[node name="difficiltMode" type="CheckBox" parent="TabContainer/items/LevelFeatures"]
 margin_left = 202.0
 margin_right = 373.0
 margin_bottom = 33.0
+hint_tooltip = "If checked, new cells can be static cells"
 size_flags_horizontal = 0
 size_flags_vertical = 0
 custom_fonts/font = SubResource( 2 )
@@ -106,10 +100,12 @@ margin_bottom = 16.0
 custom_fonts/font = SubResource( 3 )
 text = "Bomb Prob:"
 
-[node name="SpinBox" type="SpinBox" parent="TabContainer/items/LevelFeatures/BombContainer"]
+[node name="bombPercent" type="SpinBox" parent="TabContainer/items/LevelFeatures/BombContainer"]
 margin_top = 20.0
 margin_right = 74.0
 margin_bottom = 44.0
+max_value = 1.0
+step = 0.1
 
 [node name="LineRemover" type="VBoxContainer" parent="TabContainer/items/LevelFeatures"]
 margin_left = 527.0
@@ -122,10 +118,12 @@ margin_bottom = 16.0
 custom_fonts/font = SubResource( 3 )
 text = "Line remover Prob:"
 
-[node name="SpinBox" type="SpinBox" parent="TabContainer/items/LevelFeatures/LineRemover"]
+[node name="linePercent" type="SpinBox" parent="TabContainer/items/LevelFeatures/LineRemover"]
 margin_top = 20.0
 margin_right = 122.0
 margin_bottom = 44.0
+max_value = 1.0
+step = 0.1
 
 [node name="HexRemover" type="VBoxContainer" parent="TabContainer/items/LevelFeatures"]
 margin_left = 689.0
@@ -138,13 +136,14 @@ margin_bottom = 16.0
 custom_fonts/font = SubResource( 3 )
 text = "Hex remover Prob:"
 
-[node name="SpinBox" type="SpinBox" parent="TabContainer/items/LevelFeatures/HexRemover"]
+[node name="hexPercent" type="SpinBox" parent="TabContainer/items/LevelFeatures/HexRemover"]
 margin_top = 20.0
 margin_right = 124.0
 margin_bottom = 44.0
+max_value = 1.0
+step = 0.1
 
 [node name="objective" type="Tabs" parent="TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -153,67 +152,17 @@ margin_right = -4.0
 margin_bottom = -4.0
 
 [node name="LevelGoals" type="HBoxContainer" parent="TabContainer/objective"]
+margin_left = 8.0
 margin_top = -6.0
 margin_right = 1012.0
 margin_bottom = 73.0
-custom_constants/separation = 25
+custom_constants/separation = 60
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MainGoal" type="VBoxContainer" parent="TabContainer/objective/LevelGoals"]
-margin_right = 303.0
-margin_bottom = 80.0
-
-[node name="Labelcontainer" type="VBoxContainer" parent="TabContainer/objective/LevelGoals/MainGoal"]
-margin_right = 303.0
-margin_bottom = 14.0
-
-[node name="Label" type="Label" parent="TabContainer/objective/LevelGoals/MainGoal/Labelcontainer"]
-margin_right = 303.0
-margin_bottom = 14.0
-text = "Main goal:"
-
-[node name="TypeGoal" type="HBoxContainer" parent="TabContainer/objective/LevelGoals/MainGoal"]
-margin_top = 18.0
-margin_right = 303.0
-margin_bottom = 42.0
-
-[node name="combo" type="CheckBox" parent="TabContainer/objective/LevelGoals/MainGoal/TypeGoal" groups=[
-"main_goal",
-]]
-margin_right = 116.0
-margin_bottom = 24.0
-group = ExtResource( 4 )
-text = "combo points"
-
-[node name="points" type="CheckBox" parent="TabContainer/objective/LevelGoals/MainGoal/TypeGoal" groups=[
-"main_goal",
-]]
-margin_left = 120.0
-margin_right = 188.0
-margin_bottom = 24.0
-pressed = true
-group = ExtResource( 4 )
-text = "points"
-
-[node name="remove cells" type="CheckBox" parent="TabContainer/objective/LevelGoals/MainGoal/TypeGoal" groups=[
-"main_goal",
-]]
-margin_left = 192.0
-margin_right = 303.0
-margin_bottom = 24.0
-group = ExtResource( 4 )
-text = "remove cells"
-
-[node name="target" type="SpinBox" parent="TabContainer/objective/LevelGoals/MainGoal"]
-margin_top = 46.0
-margin_right = 303.0
-margin_bottom = 70.0
-
 [node name="TurnsCounter" type="VBoxContainer" parent="TabContainer/objective/LevelGoals"]
-margin_left = 328.0
-margin_right = 402.0
+margin_right = 74.0
 margin_bottom = 80.0
 alignment = 1
 
@@ -232,70 +181,243 @@ margin_right = 74.0
 margin_bottom = 61.0
 min_value = 1.0
 step = 5.0
-value = 5.0
+value = 15.0
 rounded = true
 
-[node name="BonusGoal" type="VBoxContainer" parent="TabContainer/objective/LevelGoals"]
-margin_left = 427.0
-margin_right = 730.0
+[node name="MainGoal" type="VBoxContainer" parent="TabContainer/objective/LevelGoals"]
+margin_left = 134.0
+margin_right = 532.0
 margin_bottom = 80.0
 
-[node name="Labelcontainer" type="HBoxContainer" parent="TabContainer/objective/LevelGoals/BonusGoal"]
-margin_right = 303.0
-margin_bottom = 24.0
+[node name="Labelcontainer" type="VBoxContainer" parent="TabContainer/objective/LevelGoals/MainGoal"]
+margin_right = 398.0
+margin_bottom = 14.0
 
-[node name="Label" type="Label" parent="TabContainer/objective/LevelGoals/BonusGoal/Labelcontainer"]
-margin_top = 5.0
-margin_right = 77.0
-margin_bottom = 19.0
-text = "Bonus Goal:"
+[node name="Label" type="Label" parent="TabContainer/objective/LevelGoals/MainGoal/Labelcontainer"]
+margin_right = 398.0
+margin_bottom = 14.0
+text = "Main goal:"
 
-[node name="BonusGoalActive" type="CheckBox" parent="TabContainer/objective/LevelGoals/BonusGoal/Labelcontainer"]
-margin_left = 81.0
-margin_right = 105.0
-margin_bottom = 24.0
+[node name="TypeGoal" type="HBoxContainer" parent="TabContainer/objective/LevelGoals/MainGoal"]
+margin_top = 18.0
+margin_right = 398.0
+margin_bottom = 42.0
 
-[node name="TypeGoal" type="HBoxContainer" parent="TabContainer/objective/LevelGoals/BonusGoal"]
-margin_top = 28.0
-margin_right = 303.0
-margin_bottom = 52.0
-
-[node name="combo" type="CheckBox" parent="TabContainer/objective/LevelGoals/BonusGoal/TypeGoal" groups=[
-"main_goal",
-]]
+[node name="combo" type="CheckBox" parent="TabContainer/objective/LevelGoals/MainGoal/TypeGoal"]
 margin_right = 116.0
-margin_bottom = 24.0
-group = ExtResource( 4 )
-text = "combo points"
-
-[node name="points" type="CheckBox" parent="TabContainer/objective/LevelGoals/BonusGoal/TypeGoal" groups=[
-"main_goal",
-]]
-margin_left = 120.0
-margin_right = 188.0
 margin_bottom = 24.0
 pressed = true
 group = ExtResource( 4 )
+text = "combo points"
+
+[node name="points" type="CheckBox" parent="TabContainer/objective/LevelGoals/MainGoal/TypeGoal"]
+margin_left = 120.0
+margin_right = 188.0
+margin_bottom = 24.0
+group = ExtResource( 4 )
 text = "points"
 
-[node name="remove cells" type="CheckBox" parent="TabContainer/objective/LevelGoals/BonusGoal/TypeGoal" groups=[
-"main_goal",
-]]
+[node name="remove" type="CheckBox" parent="TabContainer/objective/LevelGoals/MainGoal/TypeGoal"]
 margin_left = 192.0
 margin_right = 303.0
 margin_bottom = 24.0
 group = ExtResource( 4 )
 text = "remove cells"
 
-[node name="target" type="SpinBox" parent="TabContainer/objective/LevelGoals/BonusGoal"]
-margin_top = 56.0
-margin_right = 303.0
+[node name="cellDropdown" type="OptionButton" parent="TabContainer/objective/LevelGoals/MainGoal/TypeGoal"]
+margin_left = 307.0
+margin_right = 398.0
+margin_bottom = 24.0
+disabled = true
+toggle_mode = false
+text = "cells type"
+
+[node name="target" type="SpinBox" parent="TabContainer/objective/LevelGoals/MainGoal"]
+margin_top = 46.0
+margin_right = 398.0
+margin_bottom = 70.0
+
+[node name="BonusGoal" type="VBoxContainer" parent="TabContainer/objective/LevelGoals"]
+margin_left = 592.0
+margin_right = 990.0
 margin_bottom = 80.0
 
+[node name="Labelcontainer" type="HBoxContainer" parent="TabContainer/objective/LevelGoals/BonusGoal"]
+margin_right = 398.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="TabContainer/objective/LevelGoals/BonusGoal/Labelcontainer"]
+margin_right = 77.0
+margin_bottom = 14.0
+text = "Bonus Goal:"
+
+[node name="TypeGoal" type="HBoxContainer" parent="TabContainer/objective/LevelGoals/BonusGoal"]
+margin_top = 18.0
+margin_right = 398.0
+margin_bottom = 42.0
+
+[node name="comboBonus" type="CheckBox" parent="TabContainer/objective/LevelGoals/BonusGoal/TypeGoal"]
+margin_right = 116.0
+margin_bottom = 24.0
+pressed = true
+group = ExtResource( 2 )
+text = "combo points"
+
+[node name="pointsBonus" type="CheckBox" parent="TabContainer/objective/LevelGoals/BonusGoal/TypeGoal"]
+margin_left = 120.0
+margin_right = 188.0
+margin_bottom = 24.0
+group = ExtResource( 2 )
+text = "points"
+
+[node name="removeBonus" type="CheckBox" parent="TabContainer/objective/LevelGoals/BonusGoal/TypeGoal"]
+margin_left = 192.0
+margin_right = 303.0
+margin_bottom = 24.0
+group = ExtResource( 2 )
+text = "remove cells"
+
+[node name="cellDropdownBonus" type="OptionButton" parent="TabContainer/objective/LevelGoals/BonusGoal/TypeGoal"]
+margin_left = 307.0
+margin_right = 398.0
+margin_bottom = 24.0
+disabled = true
+toggle_mode = false
+text = "cells type"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="targetBonus" type="SpinBox" parent="TabContainer/objective/LevelGoals/BonusGoal"]
+margin_top = 46.0
+margin_right = 398.0
+margin_bottom = 70.0
+
 [node name="levels" type="Tabs" parent="TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
 margin_top = 32.0
-margin_right = -981.0
-margin_bottom = -55.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="container" type="HBoxContainer" parent="TabContainer/levels"]
+margin_top = -8.0
+margin_right = 1018.0
+margin_bottom = 81.0
+custom_constants/separation = 50
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Container" type="VBoxContainer" parent="TabContainer/levels/container"]
+margin_right = 80.0
+margin_bottom = 89.0
+alignment = 1
+
+[node name="Label" type="Label" parent="TabContainer/levels/container/Container"]
+margin_top = 23.0
+margin_right = 80.0
+margin_bottom = 37.0
+text = "Total Levels:"
+
+[node name="TotalLevels" type="SpinBox" parent="TabContainer/levels/container/Container"]
+margin_top = 41.0
+margin_right = 80.0
+margin_bottom = 65.0
+min_value = 1.0
+value = 1.0
+rounded = true
+
+[node name="Container2" type="VBoxContainer" parent="TabContainer/levels/container"]
+margin_left = 130.0
+margin_right = 250.0
+margin_bottom = 89.0
+alignment = 1
+
+[node name="Label" type="Label" parent="TabContainer/levels/container/Container2"]
+margin_top = 23.0
+margin_right = 120.0
+margin_bottom = 37.0
+text = "Select level to edit"
+
+[node name="CurrentLevel" type="SpinBox" parent="TabContainer/levels/container/Container2"]
+margin_top = 41.0
+margin_right = 120.0
+margin_bottom = 65.0
+min_value = 1.0
+max_value = 1.0
+value = 1.0
+rounded = true
+
+[node name="Container4" type="VBoxContainer" parent="TabContainer/levels/container"]
+margin_left = 300.0
+margin_right = 447.0
+margin_bottom = 89.0
+alignment = 1
+
+[node name="Label" type="Label" parent="TabContainer/levels/container/Container4"]
+margin_top = 28.0
+margin_right = 147.0
+margin_bottom = 42.0
+text = "Current Level in editor:"
+
+[node name="CurrentLevelLabel" type="Label" parent="TabContainer/levels/container/Container4"]
+margin_top = 46.0
+margin_right = 147.0
+margin_bottom = 60.0
+text = "0"
+
+[node name="Container3" type="HBoxContainer" parent="TabContainer/levels/container"]
+margin_left = 497.0
+margin_right = 1018.0
+margin_bottom = 89.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 50
+alignment = 1
+
+[node name="load" type="Button" parent="TabContainer/levels/container/Container3"]
+margin_left = 98.0
+margin_right = 175.0
+margin_bottom = 89.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 0
+text = "Load level"
+
+[node name="reset" type="Button" parent="TabContainer/levels/container/Container3"]
+margin_left = 225.0
+margin_right = 311.0
+margin_bottom = 89.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Reset Level"
+
+[node name="save" type="Button" parent="TabContainer/levels/container/Container3"]
+margin_left = 361.0
+margin_right = 423.0
+margin_bottom = 89.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Save All"
+[connection signal="toggled" from="TabContainer/items/LevelFeatures/difficiltMode" to="." method="_on_difficiltMode_toggled"]
+[connection signal="value_changed" from="TabContainer/items/LevelFeatures/BombContainer/bombPercent" to="." method="_on_bombPercent_value_changed"]
+[connection signal="value_changed" from="TabContainer/items/LevelFeatures/LineRemover/linePercent" to="." method="_on_linePercent_value_changed"]
+[connection signal="value_changed" from="TabContainer/items/LevelFeatures/HexRemover/hexPercent" to="." method="_on_hexPercent_value_changed"]
+[connection signal="value_changed" from="TabContainer/objective/LevelGoals/TurnsCounter/turns" to="." method="_on_turns_value_changed"]
+[connection signal="toggled" from="TabContainer/objective/LevelGoals/MainGoal/TypeGoal/combo" to="." method="_on_combo_toggled"]
+[connection signal="toggled" from="TabContainer/objective/LevelGoals/MainGoal/TypeGoal/points" to="." method="_on_points_toggled"]
+[connection signal="toggled" from="TabContainer/objective/LevelGoals/MainGoal/TypeGoal/remove" to="." method="_on_remove_toggled"]
+[connection signal="item_selected" from="TabContainer/objective/LevelGoals/MainGoal/TypeGoal/cellDropdown" to="." method="_on_cellDropdown_item_selected"]
+[connection signal="value_changed" from="TabContainer/objective/LevelGoals/MainGoal/target" to="." method="_on_target_value_changed"]
+[connection signal="toggled" from="TabContainer/objective/LevelGoals/BonusGoal/TypeGoal/comboBonus" to="." method="_on_comboBonus_toggled"]
+[connection signal="toggled" from="TabContainer/objective/LevelGoals/BonusGoal/TypeGoal/pointsBonus" to="." method="_on_pointsBonus_toggled"]
+[connection signal="toggled" from="TabContainer/objective/LevelGoals/BonusGoal/TypeGoal/removeBonus" to="." method="_on_removeBonus_toggled"]
+[connection signal="item_selected" from="TabContainer/objective/LevelGoals/BonusGoal/TypeGoal/cellDropdownBonus" to="." method="_on_cellDropdownBonus_item_selected"]
+[connection signal="value_changed" from="TabContainer/objective/LevelGoals/BonusGoal/targetBonus" to="." method="_on_targetBonus_value_changed"]
+[connection signal="value_changed" from="TabContainer/levels/container/Container/TotalLevels" to="." method="_on_TotalLevels_value_changed"]
+[connection signal="pressed" from="TabContainer/levels/container/Container3/load" to="." method="_on_load_pressed"]

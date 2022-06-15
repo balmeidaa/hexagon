@@ -68,6 +68,7 @@ func load_level():
     turns_left = levelData[currentLevel].turns
     set_label_text(turnsLabel, formatTurnsLeft, turns_left)
     set_prob_items()
+    HexGrid.difficultMode = levelData[currentLevel].difficultMode
     HexGrid.create_grid(vectorScale, vectorGridSize)
     defined_goals.push_back(levelData[currentLevel].main_goal)
     defined_goals.push_back(levelData[currentLevel].bonus_goal)
@@ -100,6 +101,8 @@ func load_level():
         for obstacle in levelData[currentLevel].level_obstacles:
             for position in obstacle.position:
                 HexGrid.grid[position.x][position.y].set_type(obstacle.type)
+                
+                
 func stop_game():
         $Menu/Box.show()
         $Menu/Box/NewGame.show()
