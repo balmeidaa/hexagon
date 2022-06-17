@@ -1,4 +1,5 @@
 extends TextureButton
+ 
 
 const formatFileString = "res://Assets/Img/%s.png"
 const formatFileStringPressed = "res://Assets/Img/%s_pressed.png"
@@ -24,6 +25,7 @@ func _on_Button_mouse_entered():
 
 func _on_Button_pressed():
     self.set_pressed_texture(load(get_filename()))
+    CellEventHandler.emit_cell_type(type)
 
 func get_filename():
     return formatFileStringPressed % util.Elements.keys()[type].to_lower()

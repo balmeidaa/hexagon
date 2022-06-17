@@ -40,6 +40,7 @@ var buttons = []
 var level_edited = 0
 var levels = []
 var current_level_data = {}
+var current_cell_type = 0
 
 var main_goal =  {
       "main_goal": true,
@@ -69,24 +70,15 @@ var default_level = {
 
     
 var level_cells = []
-
-####
-# {
-#        "type": 3,
-#        "position": [
-#          {
-#            "x": 5,
-#            "y": 3
-#          },
-#          {
-#            "x": 6,
-#            "y": 3
-#          }
-#        ]
-#      }
-####
+var cell_default = {
+    "type":current_cell_type, 
+    "position":[] 
+}
+var cell_data = cell_default.duplicate(true)
 
 func _ready():
+    CellEventHandler.connect("cell_type_signal", self, "change_cell_type")
+    CellEventHandler.connect("cell_pressed", self, "save_cell_coord")
     button_types += util.SpecialCells
     button_types += util.nonClickable
     
@@ -228,35 +220,25 @@ func _on_TotalLevels_value_changed(value):
     else:
         for i in (abs(difference)):
             levels.pop_back()
-    print("---------TotalLEvel-----------")
-    print(JSON.print(levels,'\t'))
+
         
 
 func _on_CurrentLevel_value_changed(value):
-    print("---------CurrentLEvel-----------")
-    print(JSON.print(levels,'\t'))
-    print("--------------------")
-    current_level_data.main_goal = main_goal
-    current_level_data.bonus_goal = bonus_goal
-    current_level_data.level_obstacles =  level_cells
+    save_current()
  
     levels[level_edited] = current_level_data
-    current_level_data =  default_level.duplicate(true)
+    current_level_label.text = str(current_level.value)
+    current_level_data = levels[value].duplicate(true)
     level_edited = value
     load_level_data_ui(levels[value])
-    print(JSON.print(levels,'\t'))
-
-
-
-func _on_load_pressed():
-    current_level_label.text = str(current_level.value)
-    load_level_data_ui(levels[current_level.value])
+ 
 
 
 func _on_save_pressed():
+    save_current()
     var file = File.new()
-    file.open("res://zzlevels.json", File.WRITE)
-    file.store_string(JSON.print(levels))
+    file.open("res://levels.json", File.WRITE)
+    file.store_string(JSON.print(levels,'\t'))
     file.close()
 
 
@@ -264,3 +246,38 @@ func _on_save_pressed():
 func _on_reset_pressed():
     current_level_data = default_level.duplicate(true)
     load_level_data_ui(current_level_data)
+
+func change_cell_type(type):
+    current_cell_type = type
+    #sin datos en celdas
+    if cell_data.position.size() == 0:
+       return
+    #si el tipo de celda ya existia pero se agregan mas
+    for index in level_cells.size():
+
+        if level_cells[index].type == current_cell_type:
+            cell_data = level_cells[index].duplicate(true)
+            level_cells.remove(index)
+            return    
+    #tipos nuevos de celdas
+    level_cells.append(cell_data)
+    JSON.print(level_cells,'\t')
+    cell_data = cell_default.duplicate(true)
+    cell_data.type = current_cell_type   
+
+
+func save_cell_coord(coord:Vector2): 
+    var index = cell_data.position.find(coord)
+    if index == -1:
+        cell_data.position.append(coord)
+    else:
+       cell_data.position.remove(index) 
+
+  
+func save_current():
+    JSON.print(level_cells,'\t')
+    level_cells.append(cell_data)
+    current_level_data.main_goal = main_goal
+    current_level_data.bonus_goal = bonus_goal
+    current_level_data.level_obstacles = level_cells
+

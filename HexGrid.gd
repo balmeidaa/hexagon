@@ -104,6 +104,8 @@ func cell_remover(coordinates: Vector2):
 # We check the selected cell  neighbors, for second selection we check if selected cell is a neighbor
 # else the cell should un select
 func cell_handler(coordinates: Vector2):
+    if  CellEventHandler.level_editor:
+        return
     combo = 0
     var cell_type = get_cell_type(coordinates)
     match selectionStack.size():

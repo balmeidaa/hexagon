@@ -1,27 +1,8 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://LevelEditor.gd" type="Script" id=1]
 [ext_resource path="res://bonus_goal.tres" type="ButtonGroup" id=2]
-[ext_resource path="res://ubuntu.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://main_goal.tres" type="ButtonGroup" id=4]
-
-[sub_resource type="DynamicFontData" id=1]
-font_path = "res://ubuntu.ttf"
-
-[sub_resource type="DynamicFont" id=2]
-size = 25
-outline_size = 2
-outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
-use_mipmaps = true
-use_filter = true
-font_data = SubResource( 1 )
-
-[sub_resource type="DynamicFont" id=3]
-outline_size = 2
-outline_color = Color( 0.027451, 0.00392157, 0.00392157, 1 )
-use_mipmaps = true
-use_filter = true
-font_data = ExtResource( 3 )
 
 [node name="LevelEditor" type="Node2D"]
 script = ExtResource( 1 )
@@ -59,10 +40,14 @@ margin_right = -4.0
 margin_bottom = -4.0
 
 [node name="LevelFeatures" type="HBoxContainer" parent="TabContainer/items"]
-margin_left = -4.0
-margin_top = 5.0
-margin_right = 1012.0
-margin_bottom = 70.0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -508.0
+margin_top = -32.5
+margin_right = 508.0
+margin_bottom = 32.5
 grow_horizontal = 0
 grow_vertical = 0
 size_flags_horizontal = 3
@@ -75,72 +60,75 @@ __meta__ = {
 }
 
 [node name="difficiltMode" type="CheckBox" parent="TabContainer/items/LevelFeatures"]
-margin_left = 202.0
-margin_right = 373.0
-margin_bottom = 33.0
+margin_left = 230.0
+margin_right = 349.0
+margin_bottom = 24.0
 hint_tooltip = "If checked, new cells can be static cells"
 size_flags_horizontal = 0
 size_flags_vertical = 0
-custom_fonts/font = SubResource( 2 )
-text = "difficult_Mode"
+size_flags_stretch_ratio = 0.0
+text = "Difficult mode"
 flat = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="BombContainer" type="VBoxContainer" parent="TabContainer/items/LevelFeatures"]
-margin_left = 413.0
-margin_right = 487.0
+margin_left = 389.0
+margin_right = 464.0
 margin_bottom = 65.0
 
-[node name="Label" type="Label" parent="TabContainer/items/LevelFeatures/BombContainer"]
-margin_right = 74.0
-margin_bottom = 16.0
-custom_fonts/font = SubResource( 3 )
+[node name="Label2" type="Label" parent="TabContainer/items/LevelFeatures/BombContainer"]
+margin_right = 75.0
+margin_bottom = 14.0
 text = "Bomb Prob:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="bombPercent" type="SpinBox" parent="TabContainer/items/LevelFeatures/BombContainer"]
-margin_top = 20.0
-margin_right = 74.0
-margin_bottom = 44.0
+margin_top = 18.0
+margin_right = 75.0
+margin_bottom = 42.0
 hint_tooltip = "max probabilty from 0 to 1"
 max_value = 1.0
 step = 0.1
 
 [node name="LineRemover" type="VBoxContainer" parent="TabContainer/items/LevelFeatures"]
-margin_left = 527.0
-margin_right = 649.0
+margin_left = 504.0
+margin_right = 626.0
 margin_bottom = 65.0
 
 [node name="Label" type="Label" parent="TabContainer/items/LevelFeatures/LineRemover"]
 margin_right = 122.0
-margin_bottom = 16.0
-custom_fonts/font = SubResource( 3 )
+margin_bottom = 14.0
 text = "Line remover Prob:"
 
 [node name="linePercent" type="SpinBox" parent="TabContainer/items/LevelFeatures/LineRemover"]
-margin_top = 20.0
+margin_top = 18.0
 margin_right = 122.0
-margin_bottom = 44.0
+margin_bottom = 42.0
 hint_tooltip = "max probabilty from 0 to 1"
 max_value = 1.0
 step = 0.1
 
 [node name="HexRemover" type="VBoxContainer" parent="TabContainer/items/LevelFeatures"]
-margin_left = 689.0
-margin_right = 813.0
+margin_left = 666.0
+margin_right = 786.0
 margin_bottom = 65.0
 
 [node name="Label" type="Label" parent="TabContainer/items/LevelFeatures/HexRemover"]
-margin_right = 124.0
-margin_bottom = 16.0
-custom_fonts/font = SubResource( 3 )
+margin_right = 120.0
+margin_bottom = 14.0
 text = "Hex remover Prob:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="hexPercent" type="SpinBox" parent="TabContainer/items/LevelFeatures/HexRemover"]
-margin_top = 20.0
-margin_right = 124.0
-margin_bottom = 44.0
+margin_top = 18.0
+margin_right = 120.0
+margin_bottom = 42.0
 hint_tooltip = "max probabilty from 0 to 1"
 max_value = 1.0
 step = 0.1
@@ -239,6 +227,11 @@ text = "cells type"
 margin_top = 46.0
 margin_right = 398.0
 margin_bottom = 70.0
+min_value = 1.0
+max_value = 1000.0
+step = 5.0
+value = 10.0
+rounded = true
 
 [node name="BonusGoal" type="VBoxContainer" parent="TabContainer/objective/LevelGoals"]
 margin_left = 592.0
@@ -295,6 +288,11 @@ __meta__ = {
 margin_top = 46.0
 margin_right = 398.0
 margin_bottom = 70.0
+min_value = 1.0
+max_value = 1000.0
+step = 5.0
+value = 5.0
+rounded = true
 
 [node name="levels" type="Tabs" parent="TabContainer"]
 visible = false
@@ -382,15 +380,6 @@ size_flags_vertical = 3
 custom_constants/separation = 50
 alignment = 1
 
-[node name="load" type="Button" parent="TabContainer/levels/container/Container3"]
-margin_left = 98.0
-margin_right = 175.0
-margin_bottom = 89.0
-grow_horizontal = 2
-grow_vertical = 0
-size_flags_horizontal = 0
-text = "Load level"
-
 [node name="reset" type="Button" parent="TabContainer/levels/container/Container3"]
 margin_left = 225.0
 margin_right = 311.0
@@ -423,6 +412,5 @@ text = "Save All"
 [connection signal="value_changed" from="TabContainer/objective/LevelGoals/BonusGoal/targetBonus" to="." method="_on_targetBonus_value_changed"]
 [connection signal="value_changed" from="TabContainer/levels/container/Container/TotalLevels" to="." method="_on_TotalLevels_value_changed"]
 [connection signal="value_changed" from="TabContainer/levels/container/Container2/CurrentLevel" to="." method="_on_CurrentLevel_value_changed"]
-[connection signal="pressed" from="TabContainer/levels/container/Container3/load" to="." method="_on_load_pressed"]
 [connection signal="pressed" from="TabContainer/levels/container/Container3/reset" to="." method="_on_reset_pressed"]
 [connection signal="pressed" from="TabContainer/levels/container/Container3/save" to="." method="_on_save_pressed"]

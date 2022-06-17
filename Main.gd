@@ -38,7 +38,8 @@ const hex_grid_factory= preload("res://HexGrid.tscn")
 var HexGrid = null
 var levelData = {}
 var currentLevel = 0
-var cell = null
+
+var cells = []
 #TODO create a game loop
 func _ready():
 
@@ -81,16 +82,25 @@ func load_level():
         elif  goal.goal ==  points_goal:
                 goalText = "Make %d points" %  goal.objective 
         elif goal.goal ==  elimination_goal:
-                goalText = "        Eliminate %d cells" %  [(goal.objective - type_counter)]
-                cell = hex_factory.instance()
-                var offset = bonusGoalLabel.rect_position
-                var position = bonusGoalLabel.get_size()
-                position.y += offset.y * 2.1
-                position.x = 180
+                goalText = "               Eliminate %d cells" %  [(goal.objective - type_counter)]
+                var cell = hex_factory.instance()
+               
+                var position = Vector2.ZERO
+                
+                if goal.main_goal:     
+                    position.x = 120
+                    position.y = 80
+           
+                else:
+                    position.x = 180
+                    position.y = 130                   
+                    
+                print(position)
                 cell.position = position
                 cell.scale = Vector2(0.3, 0.3)
                 cell.set_type(goal.cell_type)
                 cell.set_button_state('disabled', true)
+                cells.append(cell)
                 add_child(cell)
 
         if goal.main_goal:
@@ -99,7 +109,8 @@ func load_level():
             set_label_text(bonusGoalLabel, formatBonusGoal, goalText)
             
         for obstacle in levelData[currentLevel].level_obstacles:
-            for position in obstacle.position:
+            for cords in obstacle.position:
+                var position = str2var("Vector2" + cords)
                 HexGrid.grid[position.x][position.y].set_type(obstacle.type)
                 
                 
@@ -227,5 +238,6 @@ func set_prob_items():
 
 
 func removeCellUI():
-    if is_instance_valid(cell):
-            cell.queue_free()
+    for cell in cells:
+        if is_instance_valid(cell):
+                cell.queue_free()

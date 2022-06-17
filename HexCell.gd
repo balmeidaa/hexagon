@@ -14,6 +14,7 @@ var util = preload("Util/Util.gd").new()
 func _ready():
     if CellEventHandler.level_editor:
         label_button.show()
+        $Button.toggle_mode = false
     
 func _process(_delta):
         
@@ -37,7 +38,6 @@ func set_type(newType : int):
     load_texture()
 
 func load_texture():
-    
     if util.nonClickable.has(type):
         $Button.disabled = true
 
@@ -64,7 +64,8 @@ func _on_Cell_pressed():
         get_hover_pressed_texture()
         CellEventHandler.cell_pressed(coord)
     else:
-        pass
+        set_type(CellEventHandler.cell_type)
+        CellEventHandler.cell_pressed(coord)
 
 
 func move_to():
