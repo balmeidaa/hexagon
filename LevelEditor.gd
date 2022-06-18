@@ -102,9 +102,7 @@ func _ready():
        
     util.rng.randomize()
     CellEventHandler.level_editor = true
-    HexGrid = hex_grid_factory.instance()
-    
-   
+    HexGrid = hex_grid_factory.instance()   
     add_child(HexGrid)
     HexGrid.create_grid(vectorScale, vectorGridSize)
 
@@ -138,7 +136,7 @@ func _on_removeBonus_toggled(button_pressed):
 
 
 func load_level_data_ui(level_data):
-    current_level_data = level_data
+    current_level_data = level_data.duplicate(true)
     difficult_mode.toggle_mode = current_level_data.difficultMode
     bomb_prob.value = current_level_data.probBomb
     line_prob.value = current_level_data.probLineRemover
@@ -163,9 +161,13 @@ func load_level_data_ui(level_data):
             points_bonus.pressed = true
         2:
             remove_bonus.pressed = true
-
+    HexGrid.queue_free()
+    HexGrid = hex_grid_factory.instance()
+    add_child(HexGrid)  
+    HexGrid.create_grid(vectorScale, vectorGridSize)
+    
     for obstacle in current_level_data.level_obstacles:
-        for position in obstacle.position:
+        for position in obstacle.position:           
             HexGrid.grid[position.x][position.y].set_type(obstacle.type)
 
 
@@ -226,7 +228,7 @@ func _on_TotalLevels_value_changed(value):
 func _on_CurrentLevel_value_changed(value):
     save_current()
  
-    levels[level_edited] = current_level_data
+    levels[level_edited] = current_level_data.duplicate(true)
     current_level_label.text = str(current_level.value)
     current_level_data = levels[value].duplicate(true)
     level_edited = value
@@ -254,16 +256,15 @@ func change_cell_type(type):
        return
     #si el tipo de celda ya existia pero se agregan mas
     for index in level_cells.size():
-
         if level_cells[index].type == current_cell_type:
             cell_data = level_cells[index].duplicate(true)
             level_cells.remove(index)
             return    
     #tipos nuevos de celdas
-    level_cells.append(cell_data)
-    JSON.print(level_cells,'\t')
+    level_cells.append(cell_data.duplicate(true))
     cell_data = cell_default.duplicate(true)
     cell_data.type = current_cell_type   
+
 
 
 func save_cell_coord(coord:Vector2): 
@@ -275,9 +276,13 @@ func save_cell_coord(coord:Vector2):
 
   
 func save_current():
-    JSON.print(level_cells,'\t')
-    level_cells.append(cell_data)
+    
+    if cell_data.position.size() > 0:
+        level_cells.append(cell_data)
+    print("level: ",level_edited)
+    print(JSON.print(level_cells,'\t'))
     current_level_data.main_goal = main_goal
     current_level_data.bonus_goal = bonus_goal
     current_level_data.level_obstacles = level_cells
+    level_cells = []
 

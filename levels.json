@@ -1,0 +1,81 @@
+[
+	{
+		"difficultMode": false,
+		"probBomb": 0,
+		"probLineRemover": 0,
+		"probHexRemover": 0,
+		"turns": 15,
+		"main_goal": {
+			"main_goal": true,
+			"goal": 0,
+			"objective": 0,
+			"cell_type": 0
+		},
+		"bonus_goal": {
+			"main_goal": false,
+			"goal": 0,
+			"objective": 0,
+			"cell_type": 0
+		},
+		"level_obstacles": [
+			{
+				"type": 0,
+				"position": [
+					"(4, 1)",
+					"(0, 0)",
+					"(1, 0)"
+				]
+			}
+		]
+	},
+	{
+		"difficultMode": false,
+		"probBomb": 0,
+		"probLineRemover": 0,
+		"probHexRemover": 0,
+		"turns": 15,
+		"main_goal": {
+			"main_goal": true,
+			"goal": 0,
+			"objective": 1,
+			"cell_type": 0
+		},
+		"bonus_goal": {
+			"main_goal": false,
+			"goal": 0,
+			"objective": 1,
+			"cell_type": 0
+		},
+		"level_obstacles": [
+			{
+				"type": 1,
+				"position": [
+					"(2, 0)",
+					"(1, 0)"
+				]
+			}
+		]
+	},
+	{
+		"difficultMode": false,
+		"probBomb": 0,
+		"probLineRemover": 0,
+		"probHexRemover": 0,
+		"turns": 15,
+		"main_goal": {
+			"main_goal": true,
+			"goal": 0,
+			"objective": 0,
+			"cell_type": 0
+		},
+		"bonus_goal": {
+			"main_goal": false,
+			"goal": 0,
+			"objective": 0,
+			"cell_type": 0
+		},
+		"level_obstacles": [
+
+		]
+	}
+]
