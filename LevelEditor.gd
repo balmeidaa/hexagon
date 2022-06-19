@@ -6,6 +6,7 @@ export var cellScale = .5
 var vectorScale = Vector2(cellScale, cellScale)
 export var vectorGridSize = Vector2(13,10)
 var util = preload("Util/Util.gd").new()
+var levelLoader = preload("LoadLevels.gd").new()
 onready var grid = $Grid 
 
 ####UI objetcs
@@ -21,7 +22,7 @@ onready var turns = $TabContainer/objective/LevelGoals/TurnsCounter/turns
 onready var current_level = $TabContainer/levels/container/Container2/CurrentLevel
 onready var current_level_label = $TabContainer/levels/container/Container4/CurrentLevelLabel
 
-
+onready var total_levels = $TabContainer/levels/container/Container/TotalLevels
 onready var combo = $TabContainer/objective/LevelGoals/MainGoal/TypeGoal/combo
 onready var points = $TabContainer/objective/LevelGoals/MainGoal/TypeGoal/points
 onready var remove = $TabContainer/objective/LevelGoals/MainGoal/TypeGoal/remove
@@ -40,7 +41,7 @@ var buttons = []
 var level_edited = 0
 var levels = []
 var current_level_data = {}
-var current_cell_type = 0
+
 
 var main_goal =  {
       "main_goal": true,
@@ -71,7 +72,7 @@ var default_level = {
     
 var level_cells = []
 var cell_default = {
-    "type":current_cell_type, 
+    "type":0, 
     "position":[] 
 }
 var cell_data = cell_default.duplicate(true)
@@ -107,28 +108,33 @@ func _ready():
     HexGrid.create_grid(vectorScale, vectorGridSize)
 
 
+
 func _on_combo_toggled(button_pressed):
     main_goal.goal = 0
-
+    save_goals()
 
 func _on_points_toggled(button_pressed):
     main_goal.goal = 1
-
+    save_goals()
 
 func _on_remove_toggled(button_pressed):
     cells_drop.disabled = !button_pressed
     main_goal.goal = 2
+    save_goals()
 ##### bonus 
 
 func _on_comboBonus_toggled(button_pressed):
     bonus_goal.goal = 0
+    save_goals()
 
 func _on_pointsBonus_toggled(button_pressed):
     bonus_goal.goal = 1
+    save_goals()
 
 func _on_removeBonus_toggled(button_pressed):
    cells_drop_bonus.disabled = !button_pressed
    bonus_goal.goal = 2
+   save_goals()
 
 
 ####bonus radio buttons
@@ -145,7 +151,7 @@ func load_level_data_ui(level_data):
     target_goal.value = current_level_data.main_goal.objective
     target_bonus.value = current_level_data.bonus_goal.objective
     turns.value = current_level_data.turns
-    
+    #revisar aqui los combos
     match (current_level_data.main_goal.goal):
         0:
             combo.pressed = true
@@ -194,10 +200,12 @@ func _on_turns_value_changed(value):
 
 func _on_targetBonus_value_changed(value):
     bonus_goal.objective = value
+    save_goals()
 
 
 func _on_target_value_changed(value):
     main_goal.objective = value
+    save_goals()
 
 func _on_cellDropdown_item_selected(id):
     main_goal.cell_type = cells_drop.get_item_id(id)
@@ -227,7 +235,7 @@ func _on_TotalLevels_value_changed(value):
 
 func _on_CurrentLevel_value_changed(value):
     save_current()
- 
+
     levels[level_edited] = current_level_data.duplicate(true)
     current_level_label.text = str(current_level.value)
     current_level_data = levels[value].duplicate(true)
@@ -250,20 +258,20 @@ func _on_reset_pressed():
     load_level_data_ui(current_level_data)
 
 func change_cell_type(type):
-    current_cell_type = type
+    cell_data.type = type 
     #sin datos en celdas
     if cell_data.position.size() == 0:
        return
     #si el tipo de celda ya existia pero se agregan mas
     for index in level_cells.size():
-        if level_cells[index].type == current_cell_type:
+        if level_cells[index].type == type:
             cell_data = level_cells[index].duplicate(true)
             level_cells.remove(index)
             return    
     #tipos nuevos de celdas
     level_cells.append(cell_data.duplicate(true))
     cell_data = cell_default.duplicate(true)
-    cell_data.type = current_cell_type   
+      
 
 
 
@@ -276,13 +284,29 @@ func save_cell_coord(coord:Vector2):
 
   
 func save_current():
-    
     if cell_data.position.size() > 0:
         level_cells.append(cell_data)
-    print("level: ",level_edited)
-    print(JSON.print(level_cells,'\t'))
-    current_level_data.main_goal = main_goal
-    current_level_data.bonus_goal = bonus_goal
-    current_level_data.level_obstacles = level_cells
+        cell_data = cell_default.duplicate(true)
+
+    if level_cells.size() > 0:
+        current_level_data.level_obstacles = level_cells
     level_cells = []
 
+
+
+func _on_load_pressed():
+    load_from_file()
+
+func save_goals():
+    current_level_data.main_goal = main_goal
+    current_level_data.bonus_goal = bonus_goal
+    
+func load_from_file():
+    levels = levelLoader.load_file() 
+    total_levels.value = levels.size()
+    for level in levels.size():
+        for obstacle in levels[level].level_obstacles.size():
+            for index in levels[level].level_obstacles[obstacle].position.size():
+                levels[level].level_obstacles[obstacle].position[index] = str2var("Vector2" + levels[level].level_obstacles[obstacle].position[index])
+    load_level_data_ui(levels[0])
+                 
