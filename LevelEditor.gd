@@ -43,19 +43,7 @@ var levels = []
 var current_level_data = {}
 
 
-var main_goal =  {
-      "main_goal": true,
-      "goal": 0,
-      "objective": 0,
-      "cell_type": 0
-    }
-    
-var bonus_goal =  {
-      "main_goal": false,
-      "goal": 0,
-      "objective": 0,
-      "cell_type": 0
-    }
+ 
 
 var default_level = {
     "difficultMode": false,
@@ -63,19 +51,29 @@ var default_level = {
     "probLineRemover": 0,
     "probHexRemover": 0,
     "turns": 15,
-    "main_goal": main_goal,
-    "bonus_goal": bonus_goal,
+    "main_goal": {
+      "main_goal": true,
+      "goal": 0,
+      "objective": 0,
+      "cell_type": 0
+    },
+    "bonus_goal":  {
+      "main_goal": false,
+      "goal": 0,
+      "objective": 0,
+      "cell_type": 0
+    },
     "level_obstacles": []
   }
 
 
     
 var level_cells = []
-var cell_default = {
+
+var cell_data = {
     "type":0, 
     "position":[] 
 }
-var cell_data = cell_default.duplicate(true)
 
 func _ready():
     CellEventHandler.connect("cell_type_signal", self, "change_cell_type")
@@ -110,31 +108,31 @@ func _ready():
 
 
 func _on_combo_toggled(button_pressed):
-    main_goal.goal = 0
-    save_goals()
+    current_level_data.main_goal.goal = 0
+    
 
 func _on_points_toggled(button_pressed):
-    main_goal.goal = 1
-    save_goals()
+    current_level_data.main_goal.goal = 1
+    
 
 func _on_remove_toggled(button_pressed):
     cells_drop.disabled = !button_pressed
-    main_goal.goal = 2
-    save_goals()
+    current_level_data.main_goal.goal = 2
+    
 ##### bonus 
 
 func _on_comboBonus_toggled(button_pressed):
-    bonus_goal.goal = 0
-    save_goals()
+    current_level_data.bonus_goal.goal = 0
+    
 
 func _on_pointsBonus_toggled(button_pressed):
-    bonus_goal.goal = 1
-    save_goals()
+    current_level_data.bonus_goal.goal = 1
+    
 
 func _on_removeBonus_toggled(button_pressed):
    cells_drop_bonus.disabled = !button_pressed
-   bonus_goal.goal = 2
-   save_goals()
+   current_level_data.bonus_goal.goal = 2
+   
 
 
 ####bonus radio buttons
@@ -142,10 +140,7 @@ func _on_removeBonus_toggled(button_pressed):
 
 
 func load_level_data_ui(level_data):
-    print('aa')
-    print(current_level_data.main_goal)
-    print(level_data.main_goal)
-
+   
     current_level_data = null
     current_level_data = level_data
     current_level_data.main_goal = level_data.main_goal.duplicate()
@@ -157,10 +152,7 @@ func load_level_data_ui(level_data):
     target_goal.value = current_level_data.main_goal.objective
     target_bonus.value = current_level_data.bonus_goal.objective
     turns.value = current_level_data.turns
-    #revisar aqui los combos
-    print('bb')
-    print(current_level_data.main_goal)
-    print(level_data.main_goal)
+
 
 
     match (level_data.main_goal.goal):
@@ -210,20 +202,20 @@ func _on_turns_value_changed(value):
 
 
 func _on_targetBonus_value_changed(value):
-    bonus_goal.objective = value
-    save_goals()
+    current_level_data.bonus_goal.objective = value
+    
 
 
 func _on_target_value_changed(value):
-    main_goal.objective = value
-    save_goals()
+    current_level_data.main_goal.objective = value
+    
 
 func _on_cellDropdown_item_selected(id):
-    main_goal.cell_type = cells_drop.get_item_id(id)
+    current_level_data.main_goal.cell_type = cells_drop.get_item_id(id)
      
 
 func _on_cellDropdownBonus_item_selected(id):
-    bonus_goal.cell_type = cells_drop.get_item_id(id)
+    current_level_data.bonus_goal.cell_type = cells_drop.get_item_id(id)
 
 ###level load
 
@@ -251,20 +243,6 @@ func _on_CurrentLevel_value_changed(value):
     current_level_label.text = str(current_level.value)
     current_level_data = levels[value].duplicate(true)
     level_edited = value
-    #duplicar main goal y bonus goal y guardarlo en rrelo
-    main_goal =  {
-      "main_goal": true,
-      "goal": 0,
-      "objective": 0,
-      "cell_type": 0
-    }
-    
-    bonus_goal =  {
-      "main_goal": false,
-      "goal": 0,
-      "objective": 0,
-      "cell_type": 0
-    }
     load_level_data_ui(levels[value])
     
  
@@ -284,19 +262,25 @@ func _on_reset_pressed():
     load_level_data_ui(current_level_data)
 
 func change_cell_type(type):
+    if cell_data.position.size() > 0:
+        level_cells.append(cell_data.duplicate(true))
+        cell_data.position = []
+        
     cell_data.type = type 
-    #sin datos en celdas
+
     if cell_data.position.size() == 0:
        return
     #si el tipo de celda ya existia pero se agregan mas
     for index in level_cells.size():
+
         if level_cells[index].type == type:
             cell_data = level_cells[index].duplicate(true)
             level_cells.remove(index)
             return    
     #tipos nuevos de celdas
-    level_cells.append(cell_data.duplicate(true))
-    cell_data = cell_default.duplicate(true)
+    
+    print(JSON.print(level_cells,'\t')) 
+
       
 
 
@@ -311,10 +295,16 @@ func save_cell_coord(coord:Vector2):
   
 func save_current():
     if cell_data.position.size() > 0:
-        level_cells.append(cell_data)
-        cell_data = cell_default.duplicate(true)
+        level_cells.append(cell_data.duplicate(true))
+        cell_data = {
+    "type":0, 
+    "position":[] 
+}
 
     if level_cells.size() > 0:
+        print(JSON.print(level_cells,'\t')) 
+        print('-----')
+        print(JSON.print(current_level_data.level_obstacles,'\t')) 
         current_level_data.level_obstacles = level_cells
     level_cells = []
 
@@ -323,9 +313,7 @@ func save_current():
 func _on_load_pressed():
     load_from_file()
 
-func save_goals():
-    current_level_data.main_goal = main_goal.duplicate(true)
-    current_level_data.bonus_goal = bonus_goal.duplicate(true)
+
     
 func load_from_file():
     levels = levelLoader.load_file() 
