@@ -142,8 +142,14 @@ func _on_removeBonus_toggled(button_pressed):
 
 
 func load_level_data_ui(level_data):
-    current_level_data = level_data.duplicate(true)
-    difficult_mode.toggle_mode = current_level_data.difficultMode
+    print('aa')
+    print(current_level_data.main_goal)
+    print(level_data.main_goal)
+
+    current_level_data = null
+    current_level_data = level_data
+    current_level_data.main_goal = level_data.main_goal.duplicate()
+    difficult_mode.pressed = current_level_data.difficultMode
     bomb_prob.value = current_level_data.probBomb
     line_prob.value = current_level_data.probLineRemover
     hex_prob.value = current_level_data.probHexRemover
@@ -152,7 +158,12 @@ func load_level_data_ui(level_data):
     target_bonus.value = current_level_data.bonus_goal.objective
     turns.value = current_level_data.turns
     #revisar aqui los combos
-    match (current_level_data.main_goal.goal):
+    print('bb')
+    print(current_level_data.main_goal)
+    print(level_data.main_goal)
+
+
+    match (level_data.main_goal.goal):
         0:
             combo.pressed = true
         1:
@@ -160,7 +171,7 @@ func load_level_data_ui(level_data):
         2:
             remove.pressed = true
           
-    match (current_level_data.bonus_goal.goal):
+    match (level_data.bonus_goal.goal):
         0:
             combo_bonus.pressed = true
         1:
@@ -235,12 +246,27 @@ func _on_TotalLevels_value_changed(value):
 
 func _on_CurrentLevel_value_changed(value):
     save_current()
-
+ 
     levels[level_edited] = current_level_data.duplicate(true)
     current_level_label.text = str(current_level.value)
     current_level_data = levels[value].duplicate(true)
     level_edited = value
+    #duplicar main goal y bonus goal y guardarlo en rrelo
+    main_goal =  {
+      "main_goal": true,
+      "goal": 0,
+      "objective": 0,
+      "cell_type": 0
+    }
+    
+    bonus_goal =  {
+      "main_goal": false,
+      "goal": 0,
+      "objective": 0,
+      "cell_type": 0
+    }
     load_level_data_ui(levels[value])
+    
  
 
 
@@ -298,8 +324,8 @@ func _on_load_pressed():
     load_from_file()
 
 func save_goals():
-    current_level_data.main_goal = main_goal
-    current_level_data.bonus_goal = bonus_goal
+    current_level_data.main_goal = main_goal.duplicate(true)
+    current_level_data.bonus_goal = bonus_goal.duplicate(true)
     
 func load_from_file():
     levels = levelLoader.load_file() 

@@ -110,29 +110,55 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Goals" type="VBoxContainer" parent="GUI/Container"]
+[node name="Goals" type="HBoxContainer" parent="GUI/Container"]
 margin_top = 69.0
 margin_right = 1024.0
-margin_bottom = 142.0
+margin_bottom = 136.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
 custom_constants/separation = 10
 alignment = 1
 
-[node name="MainGoal" type="Label" parent="GUI/Container/Goals"]
-margin_right = 1024.0
+[node name="HBoxContainer" type="VBoxContainer" parent="GUI/Container/Goals"]
+margin_right = 507.0
+margin_bottom = 67.0
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="MainGoal" type="Label" parent="GUI/Container/Goals/HBoxContainer"]
+margin_right = 507.0
 margin_bottom = 34.0
 custom_fonts/font = SubResource( 4 )
 text = "Main goal: 0 points"
 valign = 2
 
-[node name="BonusGoal" type="Label" parent="GUI/Container/Goals"]
-margin_top = 44.0
+[node name="BonusGoal" type="Label" parent="GUI/Container/Goals/HBoxContainer"]
+margin_top = 38.0
 margin_right = 205.0
-margin_bottom = 73.0
+margin_bottom = 67.0
 rect_min_size = Vector2( 205, 29 )
 size_flags_horizontal = 2
 size_flags_vertical = 0
 custom_fonts/font = SubResource( 5 )
 text = "bonus: 0x combo"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="GUI/Container/Goals"]
+margin_left = 517.0
+margin_right = 1024.0
+margin_bottom = 67.0
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Level" type="Label" parent="GUI/Container/Goals/HBoxContainer2"]
+margin_left = 196.0
+margin_top = 16.0
+margin_right = 310.0
+margin_bottom = 50.0
+custom_fonts/font = SubResource( 4 )
+text = "Level: 0"
+align = 2
+valign = 2
 
 [node name="Debugger" type="MarginContainer" parent="."]
 margin_right = 40.0

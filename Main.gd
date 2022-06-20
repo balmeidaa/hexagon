@@ -10,8 +10,9 @@ onready var scoreLabel = get_node("GUI/Container/Scoreboard/Score")
 onready var comboLabel = get_node("GUI/Container/Scoreboard/Combo")
 onready var turnsLabel = get_node("GUI/Container/Scoreboard/TurnsLeft")
 
-onready var mainGoalLabel = get_node("GUI/Container/Goals/MainGoal")
-onready var bonusGoalLabel = get_node("GUI/Container/Goals/BonusGoal")
+onready var mainGoalLabel = get_node("GUI/Container/Goals/HBoxContainer/MainGoal")
+onready var bonusGoalLabel = get_node("GUI/Container/Goals/HBoxContainer/BonusGoal")
+onready var levelLabel = get_node("GUI/Container/Goals/HBoxContainer2/Level")
 
 var score = 0
 var combo = 0
@@ -60,7 +61,7 @@ func _ready():
  
 func load_level():
     defined_goals.clear()
-    
+    levelLabel.text = "Level: %d" %  (currentLevel+1)  
     if currentLevel > levelData.size()-1:
         Message.text = "You Win!"
         stop_game()
