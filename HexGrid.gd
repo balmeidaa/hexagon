@@ -393,7 +393,7 @@ func get_full_line(coordinates:Vector2, axis:String):
         return result
         
 func insert_cells():
-    var prob = util.rng.randf() * 100
+    var prob = util.rng.randf()
     if prob <= probHexRemover:
         return util.Elements.HEXAGONAL_REMOVER
     elif prob <= probLineRemover:

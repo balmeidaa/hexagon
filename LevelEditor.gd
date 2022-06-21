@@ -277,9 +277,7 @@ func change_cell_type(type):
             cell_data = level_cells[index].duplicate(true)
             level_cells.remove(index)
             return    
-    #tipos nuevos de celdas
-    
-    print(JSON.print(level_cells,'\t')) 
+
 
       
 
@@ -297,14 +295,11 @@ func save_current():
     if cell_data.position.size() > 0:
         level_cells.append(cell_data.duplicate(true))
         cell_data = {
-    "type":0, 
-    "position":[] 
-}
+        "type":0, 
+        "position":[] 
+    }
 
     if level_cells.size() > 0:
-        print(JSON.print(level_cells,'\t')) 
-        print('-----')
-        print(JSON.print(current_level_data.level_obstacles,'\t')) 
         current_level_data.level_obstacles = level_cells
     level_cells = []
 

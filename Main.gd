@@ -96,7 +96,6 @@ func load_level():
                     position.x = 180
                     position.y = 130                   
                     
-                print(position)
                 cell.position = position
                 cell.scale = Vector2(0.3, 0.3)
                 cell.set_type(goal.cell_type)
